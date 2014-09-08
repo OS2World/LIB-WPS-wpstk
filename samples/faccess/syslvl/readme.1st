@@ -1,0 +1,18 @@
+
+  SYSLEVEL file access functions sample readme
+  Copyright (c) 2003  WPS Toolkit Project by Christian Langanke
+
+
+file list:
+------------------------
+makefile      - creates the test program
+readme.1st    - you are reading it
+_syslvl.c     - source of test program
+
+Execute
+------------------------
+make all      - to build the sample program (default)
+make clean    - to delete the files created by the build
+make run      - to (build and) run the sample program
+make debug    - to (build and) load the sample program into debugger
+

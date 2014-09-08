@@ -1,0 +1,10 @@
+Welcome to the settings and details manager WPS sample of the Workplace Shell Toolkit.
+
+The following pages demo the functions of the Settings and Details Manager API. Please see the online help (book\wtkref.inf, section "Settings and Details Manager") and the sample source code (samples\setting\wps) for more information.
+
+You way want to test the following features:
+
+*   update of the folder details when closing the object (the update time and date does not always update, due to a restriction of the Workplace Shell)
+
+*   input validation on IP adresses, when closing the settings notebook, jumping back to the respective page and setting the focus to the respecting GUI control
+

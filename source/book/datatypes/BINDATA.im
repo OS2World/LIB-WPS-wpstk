@@ -1,0 +1,9 @@
+Placeholder for BINDATA16 or BINDATA32, which are
+structures for access to binary data linked by a object
+module created by XBIN2OBJ. Depending on the compiler,
+either the 16- or 32 bit variant is being mapped to.
+:note.
+:ul compact.
+:li.BINDATA16 or BINDATA32 should not be used, instead use BINDATA.
+:eul.
+:p.

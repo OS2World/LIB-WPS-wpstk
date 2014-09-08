@@ -1,0 +1,8 @@
+This is a sample text, which is bound both to
+a 16-bit and a 32.bit exe file as an external
+data object. It can easily be referenced via
+the data structure BINDATA, which automatically
+handles the different layout for the 16/32-bit
+binary data object and its preceeding length field,
+which is 16/32-bit in size, corresponding to the
+chosen memory model.

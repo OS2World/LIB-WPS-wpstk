@@ -1,0 +1,29 @@
+;****************************** Module Header ******************************\
+;
+; Module Name: wpstk.def
+;
+; Module definition file for buidlevel information functions sample
+;
+; Copyright (c) WPS Toolkit Project - Christian Langanke 2005
+;
+; $Id: _bldl.def,v 1.2 2006-08-13 14:05:01 cla Exp $
+;
+; ===========================================================================
+;
+; This file is part of the WPS Toolkit package and is free software.  You can
+; redistribute it and/or modify it under the terms of the GNU Library General
+; Public License as published by the Free Software Foundation, in version 2
+; as it comes in the "COPYING.LIB" file of the WPS Toolkit main distribution.
+; This library is distributed in the hope that it will be useful, but WITHOUT
+; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+; License for more details.
+;
+;***************************************************************************/
+
+NAME _BLDL
+DESCRIPTION '@#NETLABS:1.23.4567#@_BLDL - Workplace Shell Toolkit buidlevel information functions sample - Copyright C.Langanke 2003-2005'
+
+PROTMODE
+STACKSIZE 32768
+

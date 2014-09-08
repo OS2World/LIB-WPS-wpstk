@@ -1,0 +1,11 @@
+Top level make file help.
+
+To pass arguments to sublevel makefiles, specify them with ARG last parameter
+Example: make samples ARG="all NDEBUG=1"
+
+Get further help with:
+
+make targets  - display all valid pseudotargets supported by the main
+                (GNU)makefile
+make symbols  - display all symbols, that can be specified as make arguments
+                to override the defaults of the makefile configuration

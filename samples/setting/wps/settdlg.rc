@@ -1,0 +1,37 @@
+/****************************** Module Header ******************************\
+*
+* Module Name: settdlg.rc
+*
+* resource script file of test class of
+* settings and details manager WPS sample
+*
+* Copyright (c) WPS Toolkit Project - Christian Langanke 2000
+*
+* $Id: settdlg.rc,v 1.4 2006-12-07 21:23:40 cla Exp $
+*
+* ===========================================================================
+*
+* This file is part of the WPS Toolkit package and is free software.  You can
+* redistribute it and/or modify it under the terms of the GNU Library General
+* Public License as published by the Free Software Foundation, in version 2
+* as it comes in the "COPYING.LIB" file of the WPS Toolkit main distribution.
+* This library is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+* License for more details.
+*
+\***************************************************************************/
+
+#include "settdlg.rch"
+
+#ifndef OS2_INCLUDED
+   #include <os2.h>
+#endif
+
+#include <warp4def.h>
+
+ICON IDRES_ICON SETTCLS.ICO
+RESOURCE RT_USER_DATAFILE IDRES_TEXT_WELCOME welcome.txt
+
+rcinclude "settdlg.dlg"
+

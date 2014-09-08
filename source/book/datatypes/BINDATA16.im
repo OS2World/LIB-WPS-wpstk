@@ -1,0 +1,9 @@
+Structure for access to 16-bit binary data linked by a object module created by XBIN2OBJ.
+:p.
+This datatype is used indirectly when the datatype BINDATA
+is used with a 16-bit compiler.
+:note.
+:ul compact.
+:li.BINDATA16 should not be used, instead use BINDATA.
+:eul.
+:p.

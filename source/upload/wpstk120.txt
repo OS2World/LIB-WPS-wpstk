@@ -1,0 +1,32 @@
+                          Upload Information Template for Hobbes.nmsu.edu
+                          ===============================================
+
+        Archive Filename: wpstk120.zip
+       Short Description: (v1.20) WPSTK - FREEWARE
+        Long Description: The Workplace Shell Toolkit provides helper
+                          functions for easier creation of new
+                          Workplace Shell Classes. Many functions are
+                          also useful for plain PM programming.
+                          The source of the "WPS Toolkit Project" is
+                          freely available as an Open Source Archive
+                          on www.netlabs.org
+
+      Proposed directory
+           for placement: /pub/os2/dev/wps
+
+               Your name: Christian Langanke
+           Email address: cla@clanganke.de
+    Program contact name: (same)
+   Program contact email: (same)
+             Program URL: http://wpstk.netlabs.org
+
+      Would you like the
+   contact email address
+    included in listings? yes
+
+Operating System/Version: OS/2 WARP 3
+ Additional requirements: Compiler ( either IBM C Set/2, IBM VAC 3 or gcc)
+                          and Developers Toolkit for OS/2 Warp 3 or better
+
+                Replaces: /pub/os2/dev/wps/wpstk110.zip
+

@@ -1,0 +1,2 @@
+Structure for callback request to let the WPS class update the target buffer(s)
+for a given setting, before it is read for determining the current settings.

@@ -1,0 +1,330 @@
+# project specific extensions to GNUrules.in
+#
+# Copyright (c) WPS Toolkit Project - Christian Langanke 2002
+#
+# $Id: GNUproject.in,v 1.18 2009-01-14 20:48:24 cla Exp $
+#
+# ===========================================================================
+#
+# This file is part of the WPS Toolkit package and is free software.  You can
+# redistribute it and/or modify it under the terms of the GNU Library General
+# Public License as published by the Free Software Foundation, in version 2
+# as it comes in the "COPYING.LIB" file of the WPS Toolkit main distribution.
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+# License for more details.
+
+# --- check for required base macros
+
+ERROR_TEXT=error in GNUproject.in: CMPDIR must be set in your makfile before including this file.
+ifndef CMPDIR
+$(error $(ERROR_TEXT))
+$(shell cmd /c "echo $(ERROR_TEXT)" $(TO_ERR))
+	error
+endif
+
+ERROR_TEXT=error in GNUproject.in: BINDIR must be set in your makfile before including this file.
+ifndef BINDIR
+$(error $(ERROR_TEXT))
+$(shell cmd /c "echo $(ERROR_TEXT)" $(TO_ERR))
+	error
+endif
+
+# ------------------------------------------------------------------------------
+# include configuration settings
+# ------------------------------------------------------------------------------
+
+-include $(BASEDIR)/config/config.in
+
+# ------------------------------------------------------------------------------
+# start/end message definitions
+# ------------------------------------------------------------------------------
+
+STARTMSG=***** $(DESCRIPTION) starts $(TO_ERR)
+ENDMSG=***** $(DESCRIPTION) ends $(TO_ERR)
+
+# --- don't print directories on recursive calls
+MAKE:=$(MAKE) --no-print-directory
+
+# ------------------------------------------------------------------------------
+# static directory section
+# ------------------------------------------------------------------------------
+
+
+# some VARS
+CFG_TITLEFILE=$(BASEDIR_BS)\config\mktitle.ht
+CFG_HELPMAIN=$(BASEDIR_BS)\config\mkhelp.ht
+CFG_HELPTARGETS=$(BASEDIR_BS)\config\mktarget.ht
+CFG_HELPSYMBOL1=$(BASEDIR_BS)\config\mkgmake.ht
+CFG_HELPSYMBOL2=$(BASEDIR_BS)\config\mksymbol.ht
+
+# ------------------------------------------------------------------------------
+# check environment and display section
+# ------------------------------------------------------------------------------
+
+# show title and determine COMPILER and WARP TOOLKIT VERSION
+# ----------------------------------------------------------
+#
+# generate the component strings only for top level makefile !
+# - write configure.in to compile dir !
+# - don't do that if  MAKELEVEL=0
+# - if target is "clean", pass "clean" as maketype to config.cmd,
+#   so that header and library setup for emx is not performed
+
+ifneq (clean,$(filter clean,$(MAKECMDGOALS)))
+CFG_MAKETYPE=GMAKE
+else
+CFG_MAKETYPE=clean
+endif
+
+CFG_FILE=$(BASEDIR_BS)\compile\config.tmp
+ifeq ($(MAKELEVEL), 0)
+$(shell cmd /c type $(CFG_TITLEFILE) $(TO_ERR))
+$(shell cmd /c $(BASEDIR_BS)\config\config.cmd $(CFG_MAKETYPE) $(CFG_FILE) $(CFG_REQ_PROGRAMS) $(TO_ERR))
+endif
+
+# load component strings
+# ----------------------
+#
+# check if all is ok
+
+include $(CFG_FILE)
+ifneq ("$(CFG_RC)","0")
+ERROR_TEXT=error in GNUproject.in: $(CFG_FILE) could not be found or reported an error. Terminating
+$(error $(ERROR_TEXT))
+$(shell cmd /c "echo $(ERROR_TEXT)" $(TO_ERR))
+	error
+endif
+
+# CHECK COMPILER
+# --------------
+
+ifeq ("$(CFG_COMPILER)","emx")
+COMPILER_CHOSEN=1
+endif
+
+ifeq ("$(CFG_COMPILER)","gcc")
+COMPILER_CHOSEN=1
+endif
+
+ifeq ("$(COMPILER_CHOSEN)","")
+ERROR_TEXT=error in GNUproject.in: the type/version of the gcc compiler could not be determined. Terminating.
+$(error $(ERROR_TEXT))
+$(shell cmd /c "echo $(ERROR_TEXT)" $(TO_ERR))
+	error
+endif
+
+
+# CHECK TOOLKIT
+# -------------
+
+ifeq ("$(CFG_WARPTK)","V3")
+TOOLKIT_CHOSEN=1
+endif
+
+# with toolkit V4, we need to path os2def.h
+ifeq ("$(CFG_WARPTK)","V4")
+TOOLKIT_CHOSEN=1
+endif
+
+ifeq ("$(TOOLKIT_CHOSEN)","")
+ERROR_TEXT=error in GNUproject.in: the version of the WARP toolkit could not be determined. Terminating.
+$(error $(ERROR_TEXT))
+$(shell cmd /c "echo $(ERROR_TEXT)" $(TO_ERR))
+	error
+endif
+
+ifneq ($(CFG_WARPTK_PATH),)
+# We can't add Toolkit includes in _INCLUDE_PATH (it will casuse them to be searched
+# before GCC headers and lead to conflicts), so use -idirafter.
+C_FLAGS_USER += -idirafter $(CFG_WARPTK_PATH)/h -idirafter $(CFG_WARPTK_PATH)/som/include
+L_FLAGS_USER += -L$(CFG_WARPTK_PATH)/lib -L$(CFG_WARPTK_PATH)/som/lib
+else
+ifneq ($(INCLUDE),)
+# Assume the Toolkit path is specified in INCLUDE (e.g. in CONFIG.SYS)
+C_FLAGS_USER += $(foreach p,$(subst ;, , $(subst \,/,$(INCLUDE))),-idirafter $p)
+endif
+endif
+
+
+# ------------------------------------------------------------------------------
+# display section
+# ------------------------------------------------------------------------------
+
+# DISPLAY selections
+# ------------------
+
+ifdef DEBUG
+DEBUG_STATUS=active
+else
+DEBUG_STATUS=not active
+endif
+
+ifeq ($(MAKELEVEL), 0)
+$(shell cmd /c "( echo compiler: $(CFG_COMPILER), WARP Toolkit: $(CFG_WARPTK), debug: $(DEBUG_STATUS) & echo. )" $(TO_ERR))
+endif
+
+
+# ------------------------------------------------------------------------------
+# define/create project specific directories
+# ------------------------------------------------------------------------------
+
+# extend binary directory
+# ------------------------
+#
+# compiler specific subdirectory
+
+BINDIR=$(BASEDIR)/$(BINDIR_NAME)/$(CFG_COMPILER)
+BINDIR_BS=$(subst /,\,$(BINDIR))
+$(shell cmd /c "( @md $(BINDIR_BS) 2> NUL)" $(TO_ERR))
+
+# define more target directories
+# ------------------------------
+#
+# add own bin and compile directory to PATH for make purposes
+
+CPLDIR=$(CMPDIR)/$(CFG_COMPILER)
+CPLDIR_BS=$(subst /,\,$(CPLDIR))
+$(shell cmd /c "( @md $(CPLDIR_BS) 2> NUL)" $(TO_ERR))
+
+HDRDIR=$(CPLDIR)/$(CFG_WARPTK)
+HDRDIR_BS=$(subst /,\,$(HDRDIR))
+$(shell cmd /c "( @md $(HDRDIR_BS) 2> NUL)" $(TO_ERR))
+
+BOOKDIR=$(BASEDIR)/book
+BOOKDIR_BS=$(subst /,\,$(BOOKDIR))
+$(shell cmd /c "( @md $(BOOKDIR_BS) 2> NUL)" $(TO_ERR))
+
+NDXDIR=$(BASEDIR)/book/epm
+NDXDIR_BS=$(subst /,\,$(NDXDIR))
+$(shell cmd /c "( @md $(NDXDIR_BS) 2> NUL)" $(TO_ERR))
+
+# define BIN directory
+# --------------------
+#
+# add own bin and compile directory to PATH for make purposes
+
+EXECDIR=$(BASEDIR)/bin
+EXECDIR_BS=$(subst /,\,$(EXECDIR))
+
+# define INCLUDE directory
+# ------------------------
+#
+# Define $(INCDIR) and add it to the INCLUDE path, so that dependencies are
+# extended and all headers can be included properly.
+# $(CMPDIR) is added to our include path in GNUrules.in
+# this is required, because the .h and .ih files of the test WPS classes
+# are also written there !
+
+INCDIR=$(BASEDIR)/include
+INCDIR_BS=$(subst /,\,$(INCDIR))
+
+# define SOURCE directory
+# -----------------------
+#
+# This macros is used for the generation of the online help
+# and debugger calls and contains the base path of the
+# library source
+
+LIBSRCDIR=$(BASEDIR)/source/lib
+LIBSRCDIR_BS=$(subst /,\,$(LIBSRCDIR))
+
+# define list of TARGET DIRECTORIES
+# ---------------------------------
+
+DIRSTOCLEAN:=$(DIRSTOCLEAN) $(NDXDIR_BS) $(BOOKDIR_BS)
+
+# extensions to existing environment variables
+# not for main makefile
+# --------------------------------------------
+
+ifndef CFG_MAIN
+ADDINC=$(INCDIR_BS);$(HDRDIR_BS);$(CMPDIR_BS);$(SCPDIR_BS);
+
+export LIB:=$(CMPDIR_BS);$(BINDIR_BS);$(LIB)
+export PATH:=$(CMPDIR_BS);$(EXECDIR_BS);$(BINDIR_BS);$(PATH)
+export INCLUDE:=$(ADDINC)$(INCLUDE)
+
+export LIBRARY_PATH:=$(subst \,/,$(CMPDIR);$(BINDIR);$(LIBRARY_PATH))
+export C_INCLUDE_PATH:=$(subst \,/,$(ADDINC))$(C_INCLUDE_PATH)
+export CPLUS_INCLUDE_PATH:=$(subst \,/,$(ADDINC))$(C_INCLUDE_PATH)
+endif
+
+
+# ##############################################################################
+# TODO: degbugger and IPF settings
+# ##############################################################################
+
+
+# DEBUGGER
+# --------------
+#
+# for EMX override debugger as OMF format cannot be debugged by DBG
+
+ifeq ("$(CFG_COMPILER)","emx")
+DBG=echo error: WPSTK_uses_OMF_format and cannot be debugged with GDB! 1>&2 & rem
+endif
+
+# IPF COMPILER flags
+# ------------------
+#
+# Determine the compiler and the filter macro
+
+IPFCX=ipfc
+ifdef CFG_ERROR_FILTER
+IPFC_FILTER= | ipfcfilt
+endif
+
+# COMPILER filter
+# ---------------
+
+ifdef CFG_ERROR_FILTER
+ifeq ("$(CFG_COMPILER)","emx")
+GCC_FILTER= 2>&1 | gccfilt
+endif
+endif
+
+# ----------------------------------------------------------------------------------
+# deactivate PMPRINTF linkage in binary release
+# ----------------------------------------------------------------------------------
+
+ifeq ("$(CFG_TREE)","REL")
+PMPRINTF=
+endif
+
+# ----------------------------------------------------------------------------------
+# static WPS toolkit section - do not modify any macros here !
+# ----------------------------------------------------------------------------------
+
+# determine library directory
+#   binary release: directory lib + subdirectory for versions
+# development tree: directory debug or release - equals BINDIR
+# ------------------------------------------------------------
+
+ifeq ("$(CFG_TREE)","REL")
+LIBDIR=$(BASEDIR)/lib/$(CFG_COMPILER)$(CFG_SUFFIX)
+else
+LIBDIR=$(BINDIR)
+endif
+LIBDIR_BS=$(subst /,\,$(LIBDIR))
+
+ifndef CFG_MAIN
+LIB:=$(LIBDIR_BS);$(LIB)
+VPATH:=$(LIBDIR);$(INCDIR);$(VPATH)
+endif
+
+# name of the LIBRARY and LIST file
+# ---------------------------------
+
+WTK_LIBRARY_NAME=wpstk
+WTK_LIBRARY=$(LIBDIR_BS)\$(WTK_LIBRARY_NAME).lib
+WTK_LISTFILE=$(LIBDIR_BS)\$(WTK_LIBRARY_NAME).lst
+WTK_IMPLIBRARY_NAME=wpstki
+WTK_IMPLIBRARY=$(LIBDIR_BS)\$(WTK_IMPLIBRARY_NAME).lib
+DEBUG_STEM=
+ifdef DEBUG
+DEBUG_STEM=_debug
+endif
+WTK_RELEASE_FILE=$(BASEBINDIR_BS)\$(WTK_LIBRARY_NAME)$(CFG_VERSION)$(DEBUG_STEM).zip
+

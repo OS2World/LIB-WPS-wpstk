@@ -1,0 +1,2 @@
+Structure for callback request to inform the WPS class that a given control of
+a settings notebookpage has failed the validation.

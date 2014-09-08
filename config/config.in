@@ -1,0 +1,67 @@
+# project specific configuration values to (GNU)project.in
+#
+# NOTE: this module may NOT contain any NMAKE or GNU make specific
+#       directives, so no !if/!endif or if/endif and alike.
+#
+# Copyright (c) WPS Toolkit Project - Christian Langanke 2002
+#
+# $Id: config.in,v 1.20 2008-10-15 16:43:17 cla Exp $
+#
+# ===========================================================================
+#
+# This file is part of the WPS Toolkit package and is free software.  You can
+# redistribute it and/or modify it under the terms of the GNU Library General
+# Public License as published by the Free Software Foundation, in version 2
+# as it comes in the "COPYING.LIB" file of the WPS Toolkit main distribution.
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+# License for more details.
+
+# ------------------------------------------------------------------------------
+# configuration section
+# ------------------------------------------------------------------------------
+
+
+# version of the binary distribution
+# ---------------------------------
+#
+# This version number is being used when building a binary
+# distribution. As this is only to be done by the maintainer
+# of the WPS toolkit, also this file is only to be changed
+# by this maintainer.
+
+CFG_VERSION=170
+
+
+# REQUIRED PROGRAMS for makefiles
+# -------------------------------
+#
+# specify exetuable files, that configure.cmd should search for.
+# DLLs are searched in (BEGIN)(END)LIBPATH.
+# This search is done each time when a single makefile
+# or the top level makefile is called.
+# When makefiles are called from the top level makefile
+# this search is not performed.
+
+CFG_REQ_PROGRAMS=
+
+# inkremental LINK
+# ----------------
+#
+# Setting CFG_ILINK to any value will perform incremental link
+# for compilers supporting this.
+# <Not yet implemented>
+
+#CFG_ILINK=ON
+
+
+# EPM error filter
+# ---------------
+#
+# Setting CFG_ERROR_FILTER to any value will filter the output of IPFC,
+# so that EPM users can jump to the errors via the appropriate toolbar icons.
+# See bin\ipfcfilt.cmd for details.
+
+CFG_ERROR_FILTER=1
+

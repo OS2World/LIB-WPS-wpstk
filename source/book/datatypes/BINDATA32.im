@@ -1,0 +1,9 @@
+Structure for access to 32-bit binary data linked by a object module created by XBIN2OBJ.
+:p.
+This datatype is used indirectly when the datatype BINDATA
+is used with a 32-bit compiler.
+:note.
+:ul compact.
+:li.BINDATA32 should not be used, instead use BINDATA.
+:eul.
+:p.

@@ -1,0 +1,35 @@
+
+  settings and details manager VIO sample readme
+  Copyright (c) 2000  WPS Toolkit Project by Christian Langanke
+
+
+file list:
+------------------------
+makefile      - creates the test program
+readme.1st    - you are reading it
+settings.c    - source of test program
+
+Execute
+------------------------
+make all      - to build the sample program (default)
+make clean    - to delete the files created by the build
+make run      - to (build and) run the sample program
+make debug    - to (build and) load the sample program into debugger
+
+
+NOTE:
+(1) In order to use this test program, the library (at least wtkset.c)
+must be compiled with DEBUG being turned on.
+In the release version, the Settings Manager checks all SOM pointers
+with isSomObj(), and as this program does not use valid SOM pointers,
+it will fail.
+
+(2) As this program is neither a real SOM program nor a PM program,
+it cannot test certain APIs of the Settings Manager, namely those,
+which deal with class details or with GUI controls. This program
+is more for to debug the creation of settings and value tables
+and evaluation of settings strings and querying the current settings
+values. Use the settings and details WPS sample in order to test the
+full functionality of the settings manager
+
+

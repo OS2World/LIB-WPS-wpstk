@@ -1,0 +1,95 @@
+/****************************** Module Header ******************************\
+*
+* Module Name: settdlg.dlg
+*
+* dialog template script file for testclass of
+* settings and details manager WPS sample
+*
+* Copyright (c) WPS Toolkit Project - Christian Langanke 2000
+*
+* $Id: settdlg.dlg,v 1.3 2003-09-02 18:02:50 cla Exp $
+*
+* ===========================================================================
+*
+* This file is part of the WPS Toolkit package and is free software.  You can
+* redistribute it and/or modify it under the terms of the GNU Library General
+* Public License as published by the Free Software Foundation, in version 2
+* as it comes in the "COPYING.LIB" file of the WPS Toolkit main distribution.
+* This library is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+* License for more details.
+*
+\***************************************************************************/
+
+#ifndef OS2_INCLUDED
+   #include <os2.h>
+#endif
+
+DLGTEMPLATE IDDLG_DLG_CONNECTION_WELCOME LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG "", IDDLG_DLG_CONNECTION_WELCOME, 30, 15, 176, 136, NOT FS_DLGBORDER | WS_VISIBLE
+        PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    BEGIN
+        GROUPBOX        "settings and details manager WPS sample",
+                                                                IDDLG_UNUSED,             7,  22, 166, 110
+        MLE             "",                                     IDDLG_MLE_README,        15,  28, 150,  95, MLS_WORDWRAP | MLS_HSCROLL | MLS_VSCROLL | WS_GROUP
+        PUSHBUTTON      "~Help",                                IDDLG_PB_HELP,           94,   3,  40,  14
+    END
+END
+
+
+DLGTEMPLATE IDDLG_DLG_CONNECTION_LOGIN LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG "", IDDLG_DLG_CONNECTION_LOGIN, 30, 15, 156, 136, NOT FS_DLGBORDER | WS_VISIBLE
+        PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    BEGIN
+        GROUPBOX        "Login information",                    IDDLG_UNUSED,             6,  22, 146,  50
+        RTEXT           "username:",                            IDDLG_UNUSED,            16,  55,  53,   8, NOT WS_GROUP
+        ENTRYFIELD      "",                                     IDDLG_EF_USERNAME,       74,  56,  71,   6, ES_MARGIN
+        RTEXT           "password:",                            IDDLG_UNUSED,            16,  43,  53,   8, NOT WS_GROUP
+        ENTRYFIELD      "",                                     IDDLG_EF_PASSWORD,       74,  44,  71,   6, ES_MARGIN | ES_UNREADABLE
+        RTEXT           "phone number:",                        IDDLG_UNUSED,            16,  31,  53,   8, NOT WS_GROUP
+        ENTRYFIELD      "",                                     IDDLG_EF_PHONENUMBER,    74,  32,  71,   6, ES_MARGIN
+        PUSHBUTTON      "~Undo",                                IDDLG_PB_UNDO,            7,   4,  40,  14
+        PUSHBUTTON      "~Help",                                IDDLG_PB_HELP,           93,   3,  40,  14
+    END
+END
+
+DLGTEMPLATE IDDLG_DLG_CONNECTION_CONNECT LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG "", IDDLG_DLG_CONNECTION_CONNECT, 30, 15, 156, 136, NOT FS_DLGBORDER | WS_VISIBLE
+        PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    BEGIN
+        GROUPBOX        "TCP/IP related values",                IDDLG_UNUSED,             7,  22, 146, 110
+        AUTORADIOBUTTON "dynamic IP configuration",             IDDLG_RB_CFGDYNAMIC,     14, 115, 132,  10, WS_GROUP | WS_TABSTOP
+        AUTORADIOBUTTON "static IP configuration",              IDDLG_RB_CFGSTATIC,      14, 105, 132,  10, WS_TABSTOP
+        RTEXT           "your IP address:",                     IDDLG_ST_LOCALIP,        14,  96,  57,   8, NOT WS_GROUP
+        ENTRYFIELD      "",                                     IDDLG_EF_LOCALIP,        76,  97,  71,   6, ES_MARGIN | WS_GROUP
+        RTEXT           "Gateway:",                             IDDLG_ST_GATEWAY,        14,  83,  57,   8, NOT WS_GROUP
+        ENTRYFIELD      "",                                     IDDLG_EF_GATEWAY,        76,  84,  71,   6, ES_MARGIN
+        RTEXT           "network mask:",                        IDDLG_UNUSED,            14,  64,  57,   8, NOT WS_GROUP
+        ENTRYFIELD      "",                                     IDDLG_EF_NETMASK,        76,  65,  71,   6, ES_MARGIN
+        RTEXT           "MTU:",                                 IDDLG_UNUSED,            14,  51,  57,   8, NOT WS_GROUP
+        ENTRYFIELD      "",                                     IDDLG_EF_MTU,            76,  52,  71,   6, ES_MARGIN
+        RTEXT           "Nameserver:",                          IDDLG_UNUSED,            14,  38,  57,   8, NOT WS_GROUP
+        ENTRYFIELD      "",                                     IDDLG_EF_NAMESERVER,     76,  39,  71,   6, ES_MARGIN
+        AUTOCHECKBOX    "set default route to this connection", IDDLG_CB_DEFAULTROUTE,   22,  24, 126,  10
+        PUSHBUTTON      "~Undo",                                IDDLG_PB_UNDO,            8,   4,  40,  14
+        PUSHBUTTON      "~Help",                                IDDLG_PB_HELP,           94,   3,  40,  14
+    END
+END
+
+
+DLGTEMPLATE IDDLG_DLG_CONNECTION_MODEM LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG "", IDDLG_DLG_CONNECTION_MODEM, 30, 15, 156, 136, NOT FS_DLGBORDER | WS_VISIBLE
+        PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    BEGIN
+        GROUPBOX        "Modem selection",                      IDDLG_UNUSED,             4,  21, 146,  50
+        COMBOBOX        "",                                     IDDLG_CO_MODEMTYPE,       8,   9, 139,  52, CBS_DROPDOWNLIST | LS_HORZSCROLL | WS_TABSTOP | WS_VISIBLE
+        PUSHBUTTON      "~Undo",                                IDDLG_PB_UNDO,            5,   3,  40,  14
+        PUSHBUTTON      "~Help",                                IDDLG_PB_HELP,           91,   2,  40,  14
+    END
+END
+

@@ -1,0 +1,92 @@
+/****************************** Module Header ******************************\
+*
+* Module Name: settdlg.rch
+*
+* include file for dialog resource ids of
+* settings and details manager WPS sample
+*
+* Copyright (c) WPS Toolkit Project - Christian Langanke 2000
+*
+* $Id: settdlg.rch,v 1.4 2005-03-26 15:53:06 cla Exp $
+*
+* ===========================================================================
+*
+* This file is part of the WPS Toolkit package and is free software.  You can
+* redistribute it and/or modify it under the terms of the GNU Library General
+* Public License as published by the Free Software Foundation, in version 2
+* as it comes in the "COPYING.LIB" file of the WPS Toolkit main distribution.
+* This library is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+* License for more details.
+*
+\***************************************************************************/
+
+#ifndef SETTDLG_RCH
+#define SETTDLG_RCH
+
+// define private resource type
+#define RT_USER_DATAFILE           0x1000
+
+// ids for data files
+#define IDRES_TEXT_WELCOME         0x1000
+
+
+// ids for storing settings values
+// !!! DO NOT MODIFY UNDER ANY CIRCUMSTANCES OTHERWISE !!!
+// !!! VALUES CANNOT BE RESTORED FROM EXISTING INSTANCES !!!
+
+
+#define IDSET_USERNAME             0x1000
+#define IDSET_PASSWORD             0x1001
+#define IDSET_PHONENUMBER          0x1002
+#define IDSET_IPCONFIG             0x1003
+#define IDSET_LOCALIP              0x1004
+#define IDSET_GATEWAY              0x1005
+#define IDSET_NETMASK              0x1006
+#define IDSET_MTU                  0x1007
+#define IDSET_NAMESERVER           0x1008
+#define IDSET_DEFAULTROUTE         0x1009
+#define IDSET_MODEMTYPE            0x100A
+
+// define IDs for details - may not mix with settings IDs !
+#define IDDETAIL_LASTSAVED_TIME 1
+#define IDDETAIL_LASTSAVED_DATE 2
+
+#define IDRES_ICON               1
+#define IDDLG_UNUSED            -1
+
+// welcome page
+#define IDDLG_DLG_CONNECTION_WELCOME  0x0100
+#define IDDLG_MLE_README              0x0101
+
+// login page
+#define IDDLG_DLG_CONNECTION_LOGIN    0x0200
+#define IDDLG_EF_USERNAME             0x0201
+#define IDDLG_EF_PASSWORD             0x0202
+#define IDDLG_EF_PHONENUMBER          0x0203
+
+// connection page
+#define IDDLG_DLG_CONNECTION_CONNECT  0x0300
+#define IDDLG_RB_CFGDYNAMIC           0x0301
+#define IDDLG_RB_CFGSTATIC            0x0302
+#define IDDLG_ST_LOCALIP              0x0303
+#define IDDLG_EF_LOCALIP              0x0304
+#define IDDLG_ST_GATEWAY              0x0305
+#define IDDLG_EF_GATEWAY              0x0306
+#define IDDLG_EF_NETMASK              0x0307
+#define IDDLG_EF_MTU                  0x0308
+#define IDDLG_EF_NAMESERVER           0x0309
+#define IDDLG_CB_DEFAULTROUTE         0x030A
+
+// modem page
+#define IDDLG_DLG_CONNECTION_MODEM    0x0400
+#define IDDLG_CO_MODEMTYPE            0x0401
+
+
+#define IDDLG_PB_UNDO                 0x1000
+#define IDDLG_PB_HELP                 0x1001
+
+
+#endif // SETTDLG_RCH
+

@@ -1,0 +1,101 @@
+/****************************** Module Header ******************************\
+*
+* Module Name: wpstk.ih
+*
+* Internal include file for common helper routines
+*
+* Copyright (c) WPS Toolkit Project - Christian Langanke 2000
+*
+* $Id: wpstk.ih,v 1.7 2009-11-18 22:18:15 cla Exp $
+*
+* ===========================================================================
+*
+* This file is part of the WPS Toolkit package and is free software.  You can
+* redistribute it and/or modify it under the terms of the GNU Library General
+* Public License as published by the Free Software Foundation, in version 2
+* as it comes in the "COPYING.LIB" file of the WPS Toolkit main distribution.
+* This library is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+* License for more details.
+*
+\***************************************************************************/
+
+#ifndef WPSTK_IH
+#define WPSTK_IH
+
+// some useful macros
+#define MAX(a,b)        (a > b ? a : b)
+#define MIN(a,b)        (a < b ? a : b)
+
+#define NEXTSTR(s)               (s+strlen(s)+1)
+#define ENDSTR(s)                (s+strlen(s))
+#define EOS(s)                   ((PSZ)s + strlen( s))
+#define EOSSIZE(s)               (sizeof( s) - strlen( s))
+
+// internal functions
+VOID __PatchBootDrive( PSZ pszName);
+PSZ __strip( PSZ string, CHAR ch);
+PSZ __stripblanks( PSZ string);
+PSZ __skipblanks( PSZ string);
+PSZ __getPMClassName( PSZ pszClassIndex);
+PFN __loadDllFunc( PSZ pszLibName, PSZ pszFuncName);
+
+// -----------  missing definitions in Open Watcom V1.3
+
+#ifdef __WATCOMC__
+
+#ifdef COMPILE_USEOS2DEFFIX
+// os2def.h
+#ifndef PRINTDEST
+typedef struct _PRINTDEST     /* prntdst */
+{
+   ULONG        cb;
+   LONG         lType;
+   PSZ          pszToken;
+   LONG         lCount;
+   PDEVOPENDATA pdopData;
+   ULONG        fl;
+   PSZ          pszPrinter;
+} PRINTDEST;
+typedef PRINTDEST *PPRINTDEST;
+#endif
+#endif
+
+// pmstddlg.h
+#ifndef BOOKERR_INVALID_PARAMETERS
+#define BOOKERR_INVALID_PARAMETERS   -1L
+#endif
+
+// pmerr.h
+#ifndef PMERR_DOS_ERROR
+#define PMERR_DOS_ERROR                  0x1200
+#endif
+
+#ifndef PMERR_INVALID_PARAMETER_TYPE
+#define PMERR_INVALID_PARAMETER_TYPE     0x1648
+#endif
+
+#ifndef PMERR_INVALID_PARAMETERS
+#define PMERR_INVALID_PARAMETERS         0x1208
+#endif
+
+#ifndef PMERR_INSUFFICIENT_MEMORY
+#define PMERR_INSUFFICIENT_MEMORY        0x203E
+#endif
+
+
+// pmsei.h
+#ifndef SEI_DOSERROR
+#define SEI_DOSERROR     0x0008
+#endif
+
+#ifndef WinSetErrorInfo
+ERRORID APIENTRY WinSetErrorInfo(ERRORID, ULONG, ...);
+#endif
+
+#endif
+
+
+#endif /* WPSTK_IH */
+

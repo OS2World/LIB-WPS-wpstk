@@ -1,0 +1,2524 @@
+..******************************* Module Header *******************************
+..*
+..* Module Name: wtkref.txt
+..*
+..* Hypertext/2 source for Workplace Shell Toolkit Programming Guide and Reference
+..*
+..* Copyright (c) WPS Toolkit Project - Christian Langanke 2000
+..*
+..* $Id: wtkref.txt,v 1.92 2009-07-03 20:45:26 cla Exp $
+..*
+..* ===========================================================================
+..*
+..* This file is part of the WPS Toolkit package and is free software.  You can
+..* redistribute it and/or modify it under the terms of the GNU Library General
+..* Public License as published by the Free Software Foundation, in version 2
+..* as it comes in the "COPYING.LIB" file of the WPS Toolkit main distribution.
+..* This library is distributed in the hope that it will be useful, but WITHOUT
+..* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+..* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+..* License for more details.
+..*
+..*****************************************************************************
+
+.SET BASETITLE=Workplace Shell Toolkit
+.SET TITLE=*[=BASETITLE]*
+
+.SET TOPICS=Select one of the following topics:
+.SET NOTE=*Note:*
+
+.ti WPS Toolkit Programming Guide and Reference
+.hi 234
+
+.. ----------------------------------------
+.1 How to Use this Book
+.. ----------------------------------------
+.an IDPNL_HOWTOUSE
+.
+This reference is a detailed technical guide and reference for application programmers.
+It gives reference information and code examples to enable you to write source code
+using the [=TITLE].
+
+It is assumed that you are familliar with the handling of OS/2 online book files.
+More, you need to be familiar with the usage of the *Toolkit for OS/2 Warp* and
+Workplace Shell programming in general.
+If not, please refer to
+.sl
+- [inf:wpsref How to use this book]
+
+and other chapters of the *Workplace Shell Programming Reference*.
+
+[=NOTE]
+.ul compact
+- The information of the section *How to Use this Book* of the
+  *Workplace Shell Programming Reference* not being included in
+  this book applies also here.
+
+.. ----------------------------------------
+.2 Conventions used in this Reference
+.. ----------------------------------------
+.an IDPNL_HOWTOUSE_CONVENTIONS
+.
+The purpose of this reference is to give information about classes, methods,
+constants, and data types. It provides information about the methods which
+enables the user to call functions in the C programming language.
+
+The following information is provided:
+.ul compact
+- The syntax and parameters for each method.
+- The syntax of each data type and structure.
+
+.. ----------------------------------------
+.2 Reference Notation Conventions
+.. ----------------------------------------
+.an IDPNL_HOWTOUSE_REFNOTCONV
+.
+The following notation conventions are used in this reference:
+.pl tsize=35 break=none
+.. ---
+- NULL
+= The term NULL applied to a parameter is used to indicate the presence of
+  the pointer parameter, but with no value.
+.. ---
+- NULLHANDLE
+= The term NULLHANDLE applied to a parameter is used to indicate the presence
+  of the handle parameter, but with no value.
+.. ---
+- Implicit Pointer
+= If no entry for a data type "Pxxxxxxx" is found in Data Types, then it is
+  implicitly a pointer to the data type "xxxxxxx". See Implicit Pointer Data
+  Types for more information about implicit pointers.
+.. ---
+- CONSTANT NAMES
+= All constants are written in uppercase to match the header files.
+  Where applicable, constant names have a prefix derived from the name
+  of a function, message, or idea associated with the constant.
+.
+.
+  In this book, references to a complete set of constants with
+  a given prefix is written as shown in the following examples:
+.pl tsize=15 break=none
+- Window message
+= WM__**
+- System value
+= SV__**
+
+.. ----------------------------------------
+.2 Header files
+.. ----------------------------------------
+.an IDPNL_HOWTOUSE_HEADER
+.
+All functions require an "##include" statement for the system header file wtk.h.
+.fo off
+##include <wtk.h>
+.fo on
+
+Most functions also require a "##define" statement to select an appropriate
+(conditional) section of the header file, and hence, the required prototype.
+Where this is necessary, it is shown at the head of the function
+definition in the form:
+.fo off
+##define   INCL__name
+.fo on
+
+[=NOTE]
+.ul compact
+- These "##define" statements must precede the "##include <wtk.h>" statement.
+.at fc=red
+- If you also include os2.h, you must do this before including wtk.h !!!
+.at
+
+.. ----------------------------------------
+.2 Implicit Pointer Data Types
+.. ----------------------------------------
+.an IDPNL_HOWTOUSE_PTYPES
+.
+A data type name beginning with "P" (for example, PERRORCODE) is likely to be a
+pointer to another data type (in this instance, ERRORCODE).
+
+In the data type summary, Data Types, no explicit "typedefs" are shown for pointers;
+therefore, if no data type definition can be found in the summary for a data type
+name "Pxxxxxx", it represents a pointer to the data type "xxxxxx", for which a definition
+should be found in the reference.
+
+The implicit type definition needed for such a pointer "Pxxxxxx" is:
+.fo off
+typedef xxxxxx **Pxxxxxx;
+.fo on
+
+Such definitions are provided in the header files.
+
+.. ----------------------------------------
+.1 Why a Workplace Shell Toolkit ?
+.. ----------------------------------------
+.an IDPNL_WHYWPSTK
+.
+The Workplace Shell has by far the most innovative and extendible
+interface of all computer GUIs around. While this is recognized
+by many programmers aas well as users, coding Workplace Shell classes
+requires some more knowledge compared to plain GUI programming.
+
+Even when someone has got this knowledge, coding certain functionality
+that a Workplace Shell class either should or must have, is most often a very time
+consuming task.
+
+More, one often needs to create somewhat redundant code, only changing a
+few things within a lot of code lines, blowing out your source files and
+most likely leading to a lot of little nasty bugs, requiring a lot of tests
+hunting them.
+.
+Even worse, if you are creating not only one, but several Workplace Shell
+classes in one project, then you will quickly come to code several parts
+several times.
+
+Beside giving you a lot of little helper functions, the API of the
+[=TITLE] encapsulates the complexity of the handling of some of the tasks
+being most time consuming to code.
+
+See the following guides to specific major APIs of the [=TITLE]:
+.ul compact
+- [.IDPNL_APITMF]
+- [.IDPNL_APISET]
+- [.IDPNL_APIEAS]
+- [.IDPNL_APIMMF]
+- [.IDPNL_APIBBBH]
+- [.IDPNL_APINLS]
+- [.IDPNL_APIPROC]
+
+.. ----------------------------------------
+.1 Source and binary distributions of the Workplace Shell Toolkit
+.. ----------------------------------------
+.an IDPNL_DISTRIB
+.
+The [=TITLE] comes in two flavours, source and binary distributions.
+See
+.sl compact
+- [.IDPNL_SUPPORTED]
+- [.IDPNL_PREREQUSE]
+- [.IDPNL_PREREQCOMPILE]
+
+for prerequisites that apply to the two distributions in association with
+the used compiler.
+
+.pl bold underline
+.. ---------------------------------
+- source distribution
+= Beside the sample programs and the header files this version
+  includes the sources for the library and the online documentation
+  of the [=TITLE]. Unlike the *binary distribution*, this version is not
+  ready to use - it must be compiled first.
+.
+[=NOTE]
+.ul compact
+- This version is available ony via the *CVS* server of the
+  *Netlabs Open Source Archive*. See
+.
+.sl compact
+- [.IDPNL_EXTEND_GETSOURCE]
+.el
+.
+.
+for more information.
+.el
+.. ---------------------------------
+- binary distribution
+= Beside the sample programs and the header files this version
+  includes the compiled versions of the library for all supported compilers
+  and the online documentation, thus being ready to use.
+  The sources for the library and the online documentation
+  of the [=TITLE]are not included.
+.
+.
+[=NOTE]
+.ul compact
+- This version is
+  - available via
+.sl compact
+    - [http://wpstk.netlabs.org WPSTK website]
+    - [http://hobbes.nmsu.edu/cgi-bin/h-search?key=wpstk The Hobbes OS/2 archive]
+.el
+.
+- wpstk#nnn#.zip, where #nnn# is the version number.
+- will be announced via *comp.os.os2.announce*
+- is maintained only by the project team.
+
+.. ----------------------------------------
+.1 Supported compilers and editors
+.. ----------------------------------------
+.an IDPNL_SUPPORTED
+.
+[=TOPICS]
+.su V30
+
+.. ----------------------------------------
+.2 Supported IBM and Watcom compilers
+.. ----------------------------------------
+.an IDPNL_SUPPORTED_IBM
+.
+For programmers the binary distribution of the [=TITLE] is available
+for the following IBM compilers (versions used for implementation specified in brackets):
+.ul
+- IBM C Set/2 ++  (V2.1)
+- IBM VisualAge C++ V3.0 for OS/2 (V3.08)
+.
+  (VAC 3.65 not tested, but should work as well)
+- [http://www.openwatcom.org Open Watcom (V1.5)]
+
+If it is intended to compile the [=TITLE] itself or samples of it, please
+refer to the following section:
+.sl
+- [.IDPNL_PREREQCOMPILE]
+
+.. ----------------------------------------
+.2 Supported GCC compilers
+.. ----------------------------------------
+.an IDPNL_SUPPORTED_GCC
+.
+For programmers the binary distribution of the [=TITLE] is available
+for the following GNU compilers (versions used for implementation specified in brackets):
+.ul
+- [http://hobbes.nmsu.edu/cgi-bin/h-browse?sh=1&dir=/pub/os2/dev/emx/v0.9d emx 0.9d for OS/2 (GCC v2.8.1)]
+- [http://www.innotek.de Innotek GCC for OS/2 (GCC v3.3.5)]
+
+If it is intended to compile the [=TITLE] itself or samples of it, please
+refer to the following section:
+.sl
+- [.IDPNL_PREREQCOMPILE]
+
+.. ----------------------------------------
+.2 Support of EPM syntax highlighting
+.. ----------------------------------------
+.an IDPNL_SUPPORTED_EPM
+.
+If you use the EPM when developing programs,
+you might want to use the
+syntax-highlight extension for *empkwds.c*
+provided with the [=TITLE] in order
+to have function names and defines of it highlighted.
+
+For that you have to enable syntax highlighting in EPM first,
+please refer to the EPM documentatiton in order to find out how
+to do that.
+
+Then simply append the contents of the file book\epm\epmkwds.c__
+to the file epmkwds.c in your EPM directory and restart the EPM.
+
+.. ----------------------------------------
+.1 Prerequisites for using the [=BASETITLE]
+.. ----------------------------------------
+.an IDPNL_PREREQUSE
+.
+[=TOPICS]
+.su V30 1
+
+.. ----------------------------------------
+.2 Use one compiler at a time
+.. ----------------------------------------
+.an IDPNL_PREREQUSE_SINGLECOMPILER
+.
+It is highly recommended to not have more than one compiler
+directly installed within the system - that is the configuration
+is stored in CONFIG.SYS. If more than one compiler installation
+modifies CONFIG.SYS, the header files of both compilers will interfere
+with each other, leading to compile errors.
+
+If you are required to use multile compilers on a system at a time,
+you have to keep their configuration out of CONFIG.SYS. Instead, put
+them in separate batch files and set the required environment extensions
+per OS/2 window or fullscreen session.
+
+.. ----------------------------------------
+.2 Extend the environment
+.. ----------------------------------------
+.an IDPNL_PREREQUSE_ENV
+.
+In order to make use of the binary distribution (that is
+the library is compiled and ready to use), certain environment
+variables must be extended in order to let your compiler and linker
+find the header files and the import or code libraries.
+
+This can be done in the following ways:
+[=TOPICS]
+.su H50 1
+
+.. ----------------------------------------
+.3 Extend the environment using wtkenv.cmd
+.. ----------------------------------------
+.an IDPNL_PREREQUSE_ENV_WTKENV
+.
+The batchfile *bin\wtkenv.cmd* sets up the
+the environment automatically for the [=TITLE]
+library within an OS/2 window or fullscreen session.
+Then you can use the [=TITLE] library when compiling
+your program within that session.
+
+This is the recommended way of using the [=TITLE]
+
+[=NOTE]
+.ul
+- Use [.IDPNL_PREREQUSE_SINGLECOMPILER only one compiler at a time]
+- All programs requiring this environment must
+  be started from the session, where *wtkenv.cmd* has been executed in.
+  Otherwise these programs will not be aware of this environment,
+  this particularly applies to programs that you would launch
+  with a double click on an icon within the Workplace Shell.
+
+.. ----------------------------------------
+.3 Extend the environment with an own batch file
+.. ----------------------------------------
+.an IDPNL_PREREQUSE_ENV_OWNBATCH
+.
+If you prefer to use your own batch file over [.IDPNL_PREREQUSE_ENV_WTKENV wtkenv.cmd],
+you have to extend some environment variables in that file.
+
+Provided that you have installed the [=TITLE] in a directory
+#d:\wpstk#, and #subdir# is the compiler related subdirectory for
+the library files of the [=TITLE], you extend the variables as follows:
+.fo off
+SET INCLUDE=d:\wpstk\include;%INCLUDE%
+SET LIB=d:\wpstk\lib\#<subdir>#;%LIB%
+SET BOOKSHELF=d:\wpstk\book;%BOOKSHELF%
+SET HELPNDX=%HELPNDX%+d:\wpstk\book\wpstk.ndx
+.fo on
+..
+For [.IDPNL_SUPPORTED_GCC GCC compilers], also the following variables
+have to be extended:
+.fo off
+SET C__INCLUDE__PATH=d:/wpstk/include;%C__INCLUDE__PATH%
+SET LIBRARY__PATH=d:/wpstk/lib/#<subdir>#;%LIBRARY__PATH%
+.fo on
+..
+Then run that batch file within an OS/2 window
+or fullscreen session.
+
+[=NOTE]
+.ul
+- Use [.IDPNL_PREREQUSE_SINGLECOMPILER only one compiler at a time]
+- make absolutely sure that you take [.IDPNL_PREREQUSE_ENV_SPECIALGCC] into account
+- All programs requiring this environment must
+  be started from the session, where your batch file has been executed in.
+  Otherwise these programs will not be aware of this environment,
+  this particularly applies to programs that you would launch
+  with a double click on an icon within the Workplace Shell.
+
+.. ----------------------------------------
+.3 Extend the environment in your makefile
+.. ----------------------------------------
+.an IDPNL_PREREQUSE_ENV_MAKEFILE
+.
+If you prefer to extend the environment in a given makefile
+only, the makefile must extend some environment
+variables.
+
+It is recommended though to do that for testing purposes only.
+For nornmal usage it is recommended to extend the environment via
+[.IDPNL_PREREQUSE_ENV_WTKENV wtkenv.cmd] or an [.IDPNL_PREREQUSE_ENV_OWNBATCH own batch file]
+before calling your own makefiles, so that you don't have to modify many
+makefiles, once you decide to rename or move the direcory of the
+[=TITLE] installation.
+
+Provided that you have installed the [=TITLE] in a directory
+#d:\wpstk#, and #subdir# is the compiler related subdirectory for
+the library files of the [=TITLE], you extend the variables as follows
+(NMAKE syntax):
+.fo off
+INCLUDE=d:\wpstk\include;$(INCLUDE)
+LIB=d:\wpstk\lib\#<subdir>#;$(LIB)
+BOOKSHELF=d:\wpstk\book;$(BOOKSHELF)
+HELPNDX=$(HELPNDX)+d:\wpstk\book\wpstk.ndx
+.fo on
+..
+For [.IDPNL_SUPPORTED_GCC GCC compilers], also the following variables
+have to be extended:
+.fo off
+C__INCLUDE__PATH=d:/wpstk/include;$(C__INCLUDE__PATH)
+LIBRARY__PATH=d:/wpstk/lib/#<subdir>#;$(LIBRARY__PATH)
+.fo on
+..
+[=NOTE]
+.ul
+- for GNU makefiles, you have to prepend the equal sign with a colon, in order
+  to redefine an existing variable, like
+.fo off
+    INCLUDE:=d:\wpstk\include;$(INCLUDE)
+.fo on
+- Use [.IDPNL_PREREQUSE_SINGLECOMPILER only one compiler at a time]
+- make absolutely sure that you take [.IDPNL_PREREQUSE_ENV_SPECIALGCC] into account
+
+.. ----------------------------------------
+.3 Extend the environment in CONFIG.SYS
+.. ----------------------------------------
+.an IDPNL_PREREQUSE_ENV_CONFIGYS
+.
+If you are required to make the environment for the [=TITLE]
+available to all programs in the system, you have to apply
+these modifications to CONFIG.SYS. Then also programs can make use
+of the library that you would launch with a double click on an icon
+within the Workplace Shell.
+
+A drawack of this approach is that you cannot use different versions
+of the [=TITLE] library at a time.
+
+Provided that you have installed the [=TITLE] in a directory
+#d:\wpstk#, and #subdir# is the compiler related subdirectory for
+the library files of the [=TITLE], you extend the variables in
+CONFIG.SYS as follows:
+.fo off
+SET INCLUDE=d:\wpstk\include;<existing__include__path>
+SET LIB=d:\wpstk\lib\#<subdir>#;<existing__lib__path>
+SET BOOKSHELF=d:\wpstk\book;<existing__bookshelf__path>
+SET HELPNDX=<existing__help__index__list>+d:\wpstk\book\wpstk.ndx
+.fo on
+..
+For [.IDPNL_SUPPORTED_GCC GCC compilers], also the following variables
+have to be extended:
+.fo off
+SET C__INCLUDE__PATH=d:\wpstk\include;<existing__c__include__path>
+SET LIBRARY__PATH=d:\wpstk\lib\gcc;<existing__library__path>
+.fo on
+..
+[=NOTE]
+.ul
+- Use [.IDPNL_PREREQUSE_SINGLECOMPILER only one compiler at a time]
+- make absolutely sure that you take [.IDPNL_PREREQUSE_ENV_SPECIALGCC] into account
+
+.. ----------------------------------------
+.3 specialties with environment variables for GCC compilers
+.. ----------------------------------------
+.an IDPNL_PREREQUSE_ENV_SPECIALGCC
+.
+The following details have to be taken into account when setting
+GCC related environment variables:
+.ul
+- The emx reference states that all pathnames in the environment variables
+  #C__INCLUDE__PATH# and #LIBRARY__PATH# should not include backslashes,
+  but only forward slashes. Normally, you should not experience any problems
+  when using backslashes, but in order to be on the safe side the makefiles
+  of the [=TITLE] will convert backslashes to forward slashes within these
+  variables during the makefile process.
+- Make sure that the #INCLUDE# statement has the same value as the
+  #C__INCLUDE__PATH# statement, but using backslashes. Otherwise
+  utiltities like the resource compiler rc.exe will not find
+  required header files.
+
+.. ----------------------------------------
+.1 Prerequisites for compiling the [=BASETITLE]
+.. ----------------------------------------
+.an IDPNL_PREREQCOMPILE
+.
+[=TOPICS]
+.su V30
+
+.. ----------------------------------------
+.2 Compiling with NMAKE
+.. ----------------------------------------
+.an IDPNL_PREREQCOMPILE_NMAKE
+.
+The following prerequisites apply when using the *NMAKE*
+utility, with is required for the the
+[.IDPNL_PREREQCOMPILE_IBMWATCOM IBM compilers and
+the Open Watcom compiler]:
+.ul
+.. --------------------------
+- Users of a source distribution of the [=TITLE]
+  are required to download it via *CVS* to an HPFS drive. A HPFS
+  partition is also required in order to to compile it completely.
+.
+  One could copy a CVS development tree to a FAT partition,
+  this would allow to compile at least the library itself and the
+  sample programs, but the online docs could not be compiled, as the
+  source files for this require long filenames.
+.. --------------------------
+- Users of a binary distribution of the [=TITLE]
+  (not including the sources for the library or online doc)
+  can install it onto a FAT drive without problems, when using the IBM compilers.
+  In that case ignore or delete the files *GNUMAKEF* where existing,
+  as they are not required by the IBM compilers (these are the
+  *GNUmakefile*, but just with a filename cut off after the
+  eight characters).
+
+.. ----------------------------------------
+.2 Compiling with GNU make
+.. ----------------------------------------
+.an IDPNL_PREREQCOMPILE_GNUMAKE
+.
+The following prerequisites apply when using the *GNU make*
+utility, wich is required for the [.IDPNL_PREREQCOMPILE_GCC GCC compilers]:
+.ul
+.. --------------------------
+- Users of a source distribution of the [=TITLE]
+  are required to download it via *CVS* to an HPFS drive. A HPFS
+  partition is also required in order to to compile it completely.
+  One could copy a CVS development tree to a FAT partition, but then
+  would have to manually copy the former *GNUmakefile* over
+  the *makefile* in each directory, where existing.
+  This would allow to compile at least the library itself and the
+  sample programs, but the online docs could not be compiled, as the
+  source files for this require long filenames.
+.. --------------------------
+- Users of a binary distribution of the [=TITLE] (not including the
+  sources for the library or online doc) can install it onto a FAT
+  drive, as long they need not to compile the sample programs.
+
+.. ----------------------------------------
+.2 Compiling with IBM and Open Watcom compilers
+.. ----------------------------------------
+.an IDPNL_PREREQCOMPILE_IBMWATCOM
+.
+The following prerequisites apply when using the [=TITLE]
+with the IBM compilers and the Open Watcom compiler:
+.ul
+.. --------------------------
+- You are reqired to [.IDPNL_PREREQUSE_ENV extend the environment ] to use
+  the [=TITLE] library
+.
+.. --------------------------
+- You are required to use [.IDPNL_PREREQCOMPILE_NMAKE NMAKE]
+  as the make tool to compile the toolkit and its samples.
+  Using *GNU make* is not supported for the IBM compilers
+  or the open Watcom compiler. The Open Watcom make utility
+  *wmake* is as well not supported. Due to incomatibilities
+  also the Microsoft NMAKE mode of *wmake* (flag -ms) is not
+  supported.
+.
+.. --------------------------
+- In each source directory the file *makefile* is used to build the
+  respective module. This uses the [.IDPNL_BUILD_CONFIG_IBMWATCOM compiler dependant
+  include files for IBM compilers and the Watcom compiler] of the [=TITLE].
+.
+.. --------------------------
+- when you compile the [=TITLE] or samples of it, the resulting libraries
+  are put into directories named either *debug* or *release* instead of
+  *lib*, depending on the debug status during compilation.
+.
+.
+  Further, for each compiler there is a separate subdirectory below the #lib#
+  directory for each version of the [=TITLE] library file. Where the compiler
+  does not allow mixing of single- and multithread-compiled code (currently applies to
+  one compiler only) a suffix for single- or multithreaded code is appended to
+  the name of the subdirectory:
+.
+.pl compact tsize=10 break=none
+- cset2s
+= IBM C Set ++  V2.1 - singlethreaded
+- cset2m
+= IBM C Set ++  V2.1 - multithreaded
+- vac3
+= IBM VisualAge C++ V3.0 for OS/2
+- watcom
+= Open Watcom
+.el
+.
+.. ----------------------------------------
+.2 Compiling with GCC compilers
+.. ----------------------------------------
+.an IDPNL_PREREQCOMPILE_GCC
+.
+The following prerequisites apply when using the [=TITLE]
+with the [.IDPNL_SUPPORTED_GCC supported GCC compilers]:
+.ul
+.. --------------------------
+- You are reqired to [.IDPNL_PREREQUSE_ENV extend the environment ] to use
+  the [=TITLE] library
+.
+- You are required to use [.IDPNL_PREREQCOMPILE_GNUMAKE GNU make]
+  as the make tool to compile the toolkit and its samples.
+  Using *NMAKE* is not supported for the GCC compilers.
+.
+.. --------------------------
+- In each source directory the file *GNUmakefile* is used to build the
+  respective module. This uses the [.IDPNL_BUILD_CONFIG_GCC compiler dependant
+  include files for GCC compilers] of the [=TITLE].
+.
+.
+  If the OMF versions of the GCC libraries do not already exist in the
+  #lib# directory of the GCC compiler tree, write access and approx.
+  4 MB free disk space are required on the drive, where you have installed the
+  emx or GCC compiler in order to create them.
+.. --------------------------
+- when you compile the [=TITLE] yourself, the resulting libraries
+  are put into directories named either *debug* or *release* instead of
+  *lib*, depending on the debug status during compilation.
+.
+.
+  Further, for each compiler there is a separate subdirectory below the #lib#
+  directory for each version of the [=TITLE] library file. Where the compiler
+  does not allow mixing of single- and multithread-compiled code (for currently
+  one compiler only) a suffix for single- or multithreaded code is appended to
+  the name of the subdirectory:
+.
+.pl compact tsize=10 break=none
+- emx (formerly gcc !)
+= emx 0.9d for OS/2 (GCC v2.8.1)
+- gcc
+= Innotek GCC for OS/2 (GCC v3.3.5)
+.el
+
+.. ----------------------------------------
+.2 Developers Toolkit for OS/2 and eComStation
+.. ----------------------------------------
+.an IDPNL_PREREQCOMPILE_TOOLKIT
+.
+For compiling the [=TITLE], one of the following toolkits is required:
+.ul compact
+- Developers Toolkit for OS/2 Warp 4.5
+- Developers Toolkit for eComStation
+
+.. ----------------------------------------
+.1 Limitations
+.. ----------------------------------------
+.an IDPNL_LIMITATIONS
+.
+[=TOPICS]
+.su V30 1
+
+.. ----------------------------------------
+.2 General limitations
+.. ----------------------------------------
+.an IDPNL_LIMITATIONS_GENERAL
+.
+The following limitations apply to the current version of the [=TITLE]:
+.ul
+- The [=TITLE] has not been tested with
+  *Object Rexx* activated, so errors may occur using the makefiles,
+  which in turn call Rexx scripts. If errors occurr, please send a report to
+.sl compact
+  - [mailto:wpstk@netlabs.org]
+
+.. ----------------------------------------
+.2 Limitations for GCC compilers
+.. ----------------------------------------
+.an IDPNL_LIMITATIONS_GCC
+.
+The following limitations apply when using the [=TITLE]
+with the [.IDPNL_SUPPORTED_GCC supported GCC compilers]:
+.ul
+- The [=TITLE] must be compiled and can be linked
+  only in the OMF format, as only with this format a standalone DLL for
+  Workplace Shell classes can be compiled (gcc flags -Zsys and -Zso can only
+  be used with -Zomf).
+- Due to several reasons, GCC compiled Workplace Shell DLLs cannot be debugged
+  with the GNU debugger. If you require debug information, use the *pmprintf*
+  technique to obtain information what your program does when running.
+  If you use the Innotek GCC for OS/2 compiler, you can use the debugger of the IBM Visual
+  Age Debugger to debug compiled executables.
+.
+.
+  Also the test programs cannot be debugged with GDB, as GDB can debug only
+  DOS programs or bound programs (DOS and OS/2). For the emx compiler, no
+  debugger is currently available. For the Innotek GCC for OS/2 compiler, when compiled with
+  GCC flag -g (as with the [=TITLE]), the test pograms can be debugged with the
+  debuggers of the IBM Visual Age debuggers of V3.08 or V3.65 or better, where the
+  debugger of V3.08 is said to be more stable.
+.
+.
+  For more information, please refer to method E3 for creating executables with the
+  emx compiler under OS/2:
+.
+.sl compact
+- [inf:emxdev "1 Introduction" 1 Introduction to the emx Application Developer's Guide]
+
+.. ----------------------------------------
+.2 Limitations for the Open Watcom compiler
+.. ----------------------------------------
+.an IDPNL_LIMITATIONS_WATCOM
+.
+The following limitations apply when using the [=TITLE]
+with the [.IDPNL_SUPPORTED_IBMWATCOM Open Watcom compiler]:
+
+.ul
+- The Open Watcom make utility *wmake* is not supported for to build
+  the [=TITLE] library or the samples provided with it. Instead, *NMAKE.EXE*
+  of the OS/2 or ecomStation toolkit must be used.
+.
+  This limitation applies both to the native *wmake* syntax as well as
+  to the unfortunately incompatible NMAKE mode (flag -ms)
+
+.. ----------------------------------------
+.1 Linking the the [=BASETITLE] runtime
+.. ----------------------------------------
+.an IDPNL_LINKRUNTIME
+.
+[=TOPICS]
+.su V30
+
+.. ----------------------------------------
+.2 direct vrs. DLL linkage
+.. ----------------------------------------
+.an IDPNL_LINKRUNTIME_VERSUS
+.
+The [=TITLE] can be linked to your application in two ways:
+.ul compact
+- directly to your application, linking the compiler
+  dependent code library *wpstk.lib*
+- to the runtime DLL *wpstk.dll*, linking the
+  compiler dependent import library *wpstki.lib*
+
+.at fc=red
+[=NOTE]
+.ul
+- For single Workplace Shell class DLLs or single executables
+  direct code linkage is recommended.
+- when linking the runtime DLL with your application, you are
+  required to [.IDPNL_LINKRUNTIME_SHIPDLL ship this DLL with your application].
+.at
+
+.. ----------------------------------------
+.2 shipping the DLL runtime
+.. ----------------------------------------
+.an IDPNL_LINKRUNTIME_SHIPDLL
+.
+If you link the [.IDPNL_LINKRUNTIME_VERSUS runtime DLL] of the [=TITLE] to your
+application, consider the following important topics when shipping your application:
+.ul
+- when shipping your application with the runtime DLL with the original name *wpstk.dll*,
+  it is not a good idea to copy the runtime DLL with that name to a directory within
+  the *LIBPATH* when installing it onto a target system, what is unfortunately required
+  when using the runtime from Workplace Shell classes.
+.
+  But this would prevent from loading any other version of it via the *LIBPATH* once
+  it is loaded in memory and used by an application or Workplace Shell class DLL.
+.at fc=red
+- As a result it is highly recommended to *not ship the runtime DLL of the [=BASETITLE]
+  with the original name* together with your application, instead you should rename the DLL.
+.at
+  This allows you to install it to a direcotry within the *LIBPATH* again.
+- always check the version of the runtime DLL with the WtkQueryVersion API
+
+
+_*Renaming the runtime DLL*_
+
+For renanming the runtime DLL you need to
+run a DLLRNAME utility onto #a copy# of *wpstk.dll* #and#
+the executables being linked to it.
+
+.lm 5
+_Example for an executable using the DLL runtime:_
+.fo off
+   copy wpstk.dll myapp.dll
+   dllrname myapp.dll wpstk=myapp
+   dllrname myapp.exe wpstk=myapp
+.fo on
+.
+this results in *myapp.exe* using *myapp.dll*, which both can safely be shipped.
+.lm
+
+[=NOTE]
+.ul compact
+- most utilities being able to rename a DLL and the link entries within the executables
+  linking it, can only patch within the files. As a result the new name can only have
+  less or the same amount of characters as the *wpstk.dll* (so five characters as the maximum)
+
+
+_*Checking the version of the runtime DLL*_
+
+Moreover, it is recommended to  explicitely check the version number of the DLL
+runtime (either *wpstk.dll* or the nanme you choosed) within the startup code of
+your application and exit, if it does not apply to the version required.
+This avoids the hassle with older versions of the runtime, having possibly an
+incompatible or incomplete API. This may happen, if older versions of your
+application package are already installed and accidentally newer binaries are
+installed to such a system without updating the runtime DLL.
+
+.. ----------------------------------------
+.2 compiler dependencies for runtimes
+.. ----------------------------------------
+.an IDPNL_LINKRUNTIME_DEPEND
+.
+While the code and import libraries are well compiler dependent and therefore
+a version for each supported compiler is
+.ul compact
+- created in the directories *debug* or *release* within the
+  development tree of a source distribution
+- shipped in the directory *lib* within the installation tree of a
+  binary distibution,
+
+the runtime DLLs can be mixed between compilers. All DLLs are linked with a
+standalone mutlithreading compiler runtime and using system linkage, so that
+they are compatible among binaries linked to them, being complied with different
+of the supported compilers.
+
+.. ----------------------------------------
+.1 [=BASETITLE] Functions
+.. ----------------------------------------
+.an IDPNL_FUNCS
+.
+This chapter contains a list of the functions available in the
+[=TITLE].
+
+.im ..\..\compile\functions.ipf
+
+.. ----------------------------------------
+.1 Data Types
+.. ----------------------------------------
+
+The following are all the data types used by the [=TITLE].
+
+.im ..\..\compile\datatypes.ipf
+
+
+..****************************************************************************
+..******         Include section for Programmer Guides per API         *******
+..****************************************************************************
+
+.. Text Message Files (TMF)
+.include wtktmf.inc
+
+.. Settings and Details Manager
+.include wtkset.inc
+
+.. Extended Attributes Manager
+.include wtkeas.inc
+
+.. Memory Mapped Files Manager
+.include wtkmmf.inc
+
+.. Bubble Help Manager
+.include wtkbbh.inc
+
+.. National Language Support related functions
+.include wtknls.inc
+
+.. Process related functions
+.include wtkproc.inc
+
+.. PM Helper functions
+.include wtkpmh.inc
+
+.. ----------------------------------------
+.1 Modifying and distributing the [=BASETITLE]
+.. ----------------------------------------
+.an IDPNL_MODIFY
+.
+The WPS Toolkit package is free software.
+
+You can redistribute it and/or modify it under the terms of the GNU Library General
+Public License as published by the Free Software Foundation, in version 2 as it comes
+in the "COPYING.LIB" file of the WPS Toolkit main distribution.
+
+This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+See the [.IDPNL_MODIFY_GPL] for more details.
+
+.. ----------------------------------------
+.2 GNU Library General Public License
+.. ----------------------------------------
+.an IDPNL_MODIFY_GPL
+.
+.fo off
+.textinclude ..\..\COPYING.LIB
+.fo on
+
+.. ----------------------------------------
+.1 Revision History
+.. ----------------------------------------
+.an IDPNL_REVISION_HISTORY
+.
+[=TOPICS]
+.su V30
+
+.. ----------------------------------------
+.2 file__id.diz
+.. ----------------------------------------
+.an IDPNL_REVISION_FILEID
+.
+.fo off
+.textinclude ..\..\ship\file_id.diz
+.fo on
+
+.. ----------------------------------------
+.2 Unreleased Version
+.. ----------------------------------------
+.
+..  .. ----------------------------------------
+..  .2 Version 1.71
+..  .. ----------------------------------------
+..  .
+_*New:*_
+.ul
+- added new MMF function
+.ul compact
+  - [.WtkRevertMmf WtkRevertMmf] to discard changes in a file buffer
+  - [.WtkGetMmfInfo WtkGetMmfInfo] to query information abou tthe MMF Manager
+    instance of the current thread
+- extended
+.ul compact
+  for support of the following new flags
+  - MMF__UPDATE__KEEPMEM
+  - MMF__UPDATE__RELEASEMEM
+  - MMF__MEMORY__READWRITE
+  - MMF__MEMORY__READONLY
+  - MMF__ALLOC__HIGHMEM
+  - MMF__ALLOC__LOWMEM
+- extended [.WtkAllocMmfFile WtkAllocMmfFile] to examine the
+  access modes of the provided file handle. It now returns
+.ul compact
+  - ERROR__INVALID__HANDLE if the file handle is invalid
+  - ERROR__ACCESS__DENIED if the file access mode does not match
+    the access mode specified in ulOpenFlags
+- extended the MMF API to set the timestamp of a modified file
+  to the time of last update operation by [.WtkUpdateMmf WtkUpdateMmf].
+- added new [.WtkWaitProcess WtkWaitProcess] function.
+
+_*Fixed:*_
+.ul
+- reworked error handling in [.WtkInitializeMmf WtkInitializeMmf],
+  now reports the handle of an already registered handler
+  when ERROR__ACCESS__DENIED is returned
+- fixed [.WtkUpdateMmf WtkUpdateMmf] to reset the write flag for an updated
+  memory page so that subsequent updates will not update the page
+  with no reason
+- modified MMF exception handler to restrict file sizes to the maximum
+  buffer size specified on [.WtkAllocMmf WtkAllocMmf] or
+  [.WtkAllocMmfFile WtkAllocMmfFile]. Before, writing to the file buffer beyond
+  the initial file size lead to the file being extended to the size of the
+  next 4 KB page boundary.
+
+_*Online help*_
+.ul compact
+- added guide sections:
+ - [.IDPNL_APIMMF_ALLOCHIGHMEM]
+ - [.IDPNL_APIMMF_GETINFO]
+ - [.IDPNL_APIMMF_MULTITHREAD]
+ - [.IDPNL_APIMMF_LINKCODE]
+- added function [.WtkWaitProcess WtkWaitProcess]
+
+.. ----------------------------------------
+.2 Version 1.70
+.. ----------------------------------------
+.
+[=NOTE]
+.ul compact
+- This version of the [=TITLE] abandons support for the *Developers Toolkit for OS/2 V4*
+
+_*New:*_
+.ul
+- added new functions for MD5 digest calculation
+.ul compact
+  - [.WtkCalcMemMD5 WtkCalcMemMD5]
+  - [.WtkCalcFileMD5 WtkCalcFileMD5]
+  - [.WtkMD5DigestToStr WtkMD5DigestToStr]
+- added new locale helper functions
+.ul compact
+  - [.WtkQueryLocaleLanguage WtkQueryLocaleLanguage]
+  - [.WtkTranslateLanguageCode WtkTranslateLanguageCode]
+  - [.WtkQueryLanguageVariants WtkQueryLanguageVariants]
+- renamed former API WtkQuerySysLanguage to
+  [.WtkQuerySystemLanguage WtkQuerySystemLanguage], inventing the new parameter
+  ulTypeId. WtkQuerySystemLanguage now can return the language code in two- and
+  three-letter format. The old API WtkQuerySysLanguage is still supported by a macro,
+  calling WtkQuerySystemLanguage to return the three-letter language code.
+- modified the following APIs to support the %d and %D variable,
+  representing the default language
+.ul compact
+  - [.WtkGetNlsPackageFilename WtkGetNlsPackageFilename]
+  - [.WtkLoadNlsResourceModule WtkLoadNlsResourceModule]
+  - [.WtkLoadNlsInfFile WtkLoadNlsInfFile]
+- extended [.WtkNotebookDlg WtkNotebookDlg] to let the notebook
+  control cycle through all pages of that major tab, when
+  clicking repeatedly on the same major tab. Normally, clicks on
+  the major tab only bring up the major tab page
+- extended [.WtkQueryProcessDetails WtkQueryProcessDetails] to optionally
+  query process details for a pid without taking a snapshot before
+- added extensions from Yuri Dario to the [.IDPNL_APIMMF_OVERVIEW Memory Mapped Files] API
+.ul compact
+  - adding new functions to map already opened files
+    - [.WtkAllocMmfFile WtkAllocMmfFile]
+    - [.WtkFreeMmfFile WtkFreeMmfFile]
+  - allocating file buffers from high memory above 512 MB, when available.
+    Otherwise memory from conventional address space is used.
+
+_*Fixed:*_
+.ul
+- renamed datatype [.SYLEVELINFO SYLEVELINFO] to [.SYSLEVELINFO SYSLEVELINFO].
+  The old datatype name is kept for backwards compatibility, and will be removed
+  in later version.
+- corrected [.WtkQueryProcess WtkQueryProcess], not always reporting
+  active processes properly
+- corrected language identifiers reported by [.WtkQuerySystemLanguage WtkQuerySystemLanguage] to
+  match those of the OS/2 and eComStation locale and ISO 639-2
+.pl compact break=none tsize=4
+  - *old*
+  = *corrected*
+  - jpn
+  = jap
+  - pol
+  = plk
+  - swe
+  = swe
+.el
+- fixed a memory leak in [.WtkLoadModules WtkLoadModules]
+- fixed [.WtkGetNlsPackageFilename WtkGetNlsPackageFilename] to let
+  the environment variable override properly the system and locale language
+
+_*Online help*_
+.ul compact
+- reworked/extended guide section on the
+  - [.IDPNL_APINLS]
+  - [.IDPNL_APIMMF]
+- removed obsolete links to WtkGetModNlsPackageFilename in sections
+  - [.IDPNL_APINLS_LOADRES]
+  - [.IDPNL_APINLS_GETLANG_SYS]
+  - [.IDPNL_APINLS_LOADINF]
+- reworked section [.IDPNL_PMH_NBKDLG] concerning the new handling of major tabs
+- modified panel [.IDPNL_PREREQCOMPILE_TOOLKIT]:
+
+.. ----------------------------------------
+.2 Version 1.60
+.. ----------------------------------------
+.
+_*New:*_
+.ul
+- added support for Innotek GCC for OS/2 compiler
+- added support for Open Watcom compiler
+- new file functions for maintenance of buildlevel information of executable files
+.ul compact
+  - [.WtkGetBlSignature   WtkGetBlSignature]
+  - [.WtkCheckBlSignature WtkCheckBlSignature]
+  - [.WtkSetBlSignature   WtkSetBlSignature]
+
+_*Fixed:*_
+.ul
+- fixed problems in [.WtkUpdateConfigsys WtkUpdateConfigsys] that ocurred when
+  the update text contained empty lines
+- fixed bug in [.WtkSetBlSignature WtkSetBlSignature], not adjusting all offset
+  values within the LX header correctly in all cases
+
+_*Online help*_
+.ul compact
+- reworked or added new sections on
+  - [.IDPNL_SUPPORTED]
+  - [.IDPNL_PREREQUSE]
+  - [.IDPNL_PREREQCOMPILE]
+  - [.IDPNL_PREREQCOMPILE_TOOLKIT]
+.
+  This version of the [=TITLE] abandons support for the *Developers Toolkit for OS/2 V3*
+
+.. ----------------------------------------
+.2 Version 1.50
+.. ----------------------------------------
+.
+.at fc=red
+_*Important changes not downwards compatible !*_
+.ul
+- removed APIs
+  - WtkGetModNlsPackageFilename - modify name to [.WtkGetNlsPackageFilename WtkGetNlsPackageFilename]
+  - WtkLoadModNlsInfFile - modify name to [.WtkLoadNlsInfFile WtkLoadNlsInfFile]
+  - WtkLoadModNlsResourceModule - modify name to [.WtkLoadNlsResourceModule WtkLoadNlsResourceModule]
+- renamed APIs
+  - WtkGetPackageFilename - new API with this name included, old API renamed to
+    [.WtkAssemblePackageFilename WtkAssemblePackageFilename]
+.at
+
+_*Fixed:*_
+.ul
+- reworked default directory dialog layout of [.WtkDirDlg WtkDirDlg]
+- changed [.WtkQueryClassDetailsInfo WtkQueryClassDetailsInfo] to prevent
+  from WPS hangs when a properties notebook of any WPS object is launched
+- fixed missing byte packing directives for structures of
+.ul compact
+  - Bubble Help manager functions
+  - Process related functions
+  - XBIN2OBJ access function to binary data
+  - PM helper functions
+.el
+  The byte packing value is set to a value of 1.
+- modified [.WtkGetPackageFilename WtkGetPackageFilename]
+  to properly check for existance of files when no wildcard is
+  included in the filename mask. Until now using a mask with no wildcard
+  always returned an error, even when the file existed.
+- fixed error in [.WtkLoadModules WtkLoadModules] when scanning
+  the provided path, and returning ERROR__NO__MORE__FILES if no modules were found
+
+_*New:*_
+.ul
+- new module functions
+.ul compact
+  - [.WtkLoadModules WtkLoadModules]
+  - [.WtkFreeModules WtkFreeModules]
+  - [.WtkAssemblePackageFilename WtkAssemblePackageFilename]  - formerly
+    named WtkGetPackageFilename, which is now a [.WtkGetPackageFilename completely different API]
+.el
+- new PM helper function
+.ul compact
+  - [.WtkCreateHelpInstanceWithTable WtkCreateHelpInstanceWithTable]
+.el
+- new [.IDPNL_APISET] function
+.ul compact
+  - [.WtkExtractSetupString WtkExtractSetupString]
+  - [.WtkQueryIconData WtkQueryIconData]
+  - [.WtkQueryObjectClass WtkQueryObjectClass]
+  - [.WtkQueryObjectInstance WtkQueryObjectInstance]
+  - [.WtkQuerySettingstable WtkQuerySettingstable]
+  - [.WtkScanSetupString WtkScanSetupString]
+  - [.WtkSplitSetupString WtkSplitSetupString]
+.el
+- for [.WtkDirDlg WtkDirDlg] added the new flag WTK__DDS__FORCEDIALOGID to allow a
+  help manager instance to distinct between different directory dialogs when
+  selecting the panel related to the dialog.
+- extended [.IDPNL_APISET] by the following new callbacks to properly handle indexed values
+  in details view:
+.ul compact
+  - [.IDPNL_APISET_CALLBACK_QUERYDETAILINFO]
+  - [.IDPNL_APISET_CALLBACK_QUERYDETAILSTRING]
+.el
+
+.ul
+.. - - - - - - - - - -
+- Online help:
+.ul compact
+- [.IDPNL_WHYWPSTK]: updated API list
+- [.IDPNL_APIMMF_INIT]: corrected link
+- [.IDPNL_APIMMF_XHANDLER]: corrected layout
+- [.IDPNL_APISET_API_SETTINGS]: added notes on [.WtkRestoreObjectState WtkRestoreObjectState]
+- [.IDPNL_APISET_CALLBACK]: divided page into subpages
+- [.RM_WtkDisplayHelpPanel WtkDisplayHelpPanel]: added remark on closing an open help window
+  before launching a new one
+
+.. ----------------------------------------
+.2 Version 1.40
+.. ----------------------------------------
+.
+_*Fixed:*_
+.ul
+- corrected ##include statements in all syntax panels for Wtk functions
+
+_*New:*_
+.ul
+- new File helper function
+.sl compact
+- [.WtkReadFilePart WtkReadFilePart]
+.el
+- new PM helper function
+.sl compact
+- [.WtkDirDlg WtkDirDlg]
+- [.WtkDefDirDlgProc WtkDefDirDlgProc]
+- [.WtkGetStringDrawLen WtkGetStringDrawLen]
+.el
+- new PM control helper function
+.sl compact
+- [.WtkGetDefaultWindowProcPtr WtkGetDefaultWindowProcPtr]
+- [.WtkFilterEntryField WtkFilterEntryField]
+.el
+- modified [.WtkNotebookDlg WtkNotebookDlg] to support automatic subpage
+  numbering (see [.RM_WtkNotebookDlg remarks]). This required a modification of the
+  [.NOTEBOOKINFO NOTEBOOKINFO] and [.NOTEBOOKPAGEINFO NOTEBOOKPAGEINFO],
+  now requiring that a cbFix field must be set to the size of the structure.
+- added boot drive recognition to [.WtkDevIOCtl WtkDevIOCtl]
+
+.. ----------------------------------------
+.2 Version 1.30
+.. ----------------------------------------
+.
+_*Fixed:*_
+.ul
+- modified [.WtkNotebookDlg WtkNotebookDlg]
+  - to properly allow setting the focus to the control
+    specified by NOTEBOOKPAGEINFO.ulFocusId
+  - to fix an error preventing the API from saving
+    the current page only instead of all notebook pages
+  - to send a BN__CLICKED notification to the pfnwcntControl
+    callback for WM__COMMAND events on pushbuttons other than
+    specified in the NOTEBOOKPAGEINFO.
+- modified [.WtkIsOfPublicPmClass WtkIsOfPublicPmClass] to report
+  correct results if parameter ulPrimaryWindowStyle is not specified
+  (set to zero). In this case the window styles may not be checked.
+
+
+_*New:*_
+.ul
+- [.IDPNL_APIBBBH] functions
+.sl compact
+- [.WtkActivateBubbleHelp WtkActivateBubbleHelp]
+- [.WtkDeactivateBubbleHelp WtkDeactivateBubbleHelp]
+- [.WtkInitializeBubbleHelp WtkInitializeBubbleHelp]
+- [.WtkTerminateBubbleHelp WtkTerminateBubbleHelp]
+- [.WtkUpdateBubbleHelp WtkUpdateBubbleHelp]
+.el
+
+.ul
+.. - - - - - - - - - -
+- Online help:
+.ul compact
+- added main sections
+  - [.IDPNL_APIBBBH]
+  - [.IDPNL_PMH]
+
+.. ----------------------------------------
+.2 Version 1.20
+.. ----------------------------------------
+.
+_*Fixed:*_
+.ul
+- changed type of return code for [.WtkQueryVersion WtkQueryVersion]
+  reported from [.ULONG ULONG] to [.APIRET APIRET]
+- fixed error in [.WtkMoveFile WtkMoveFile], when moving files on one
+  partition
+- changed [.WtkValidateObjectValueTable WtkValidateObjectValueTable] to
+  set the focus to an errant control before executing callback
+  [.IDPNL_APISET_CALLBACK STM__CALLBACK__REPORTERROR]
+- changed [.WtkMoveFile WtkMoveFile] to properly check source and
+  target drive in order to determine moves between partitions
+- reworked bad sample within section Remarks for
+  [.WtkUpdateConfigsys WtkUpdateConfigsys], deleting
+  *C:\OS2;C:\MUGLIB;* from the *PATH* statement:
+  this would remoce system entries from the *PATH* statement when calling
+  *WtkUpdateConfigsys* with option *WTK__CFGSYS__UPDATE__DELETE*.
+
+_*New:*_
+.ul
+- PM helper functions
+.sl compact
+- [.WtkCenterWindow WtkCenterWindow]
+- [.WtkIsFontAvailable WtkIsFontAvailable]
+- [.WtkSetWindowFont WtkSetWindowFont]
+- [.WtkInsertMenu WtkInsertMenu]
+- [.WtkCreateHelpInstance WtkCreateHelpInstance ]
+- [.WtkDisplayHelpPanel WtkDisplayHelpPanel]
+- [.WtkDestroyHelpInstance WtkDestroyHelpInstance]
+- [.WtkNotebookDlg WtkNotebookDlg]
+- [.WtkQueryNotebookButton WtkQueryNotebookButton]
+- [.WtkEnableNotebookButton WtkEnableNotebookButton]
+.el
+.. - - - - - - - - - -
+- Process related functions
+.sl compact
+- [.WtkEnumProcessChilds WtkEnumProcessChilds]
+- [.WtkEnumProcessThreads WtkEnumProcessThreads]
+- [.WtkInitializeProcessStatus WtkInitializeProcessStatus]
+- [.WtkKillProcess WtkKillProcess]
+- [.WtkQueryProcessDetails WtkQueryProcessDetails]
+- [.WtkQueryProcessStatusMaxLevel WtkQueryProcessStatusMaxLevel]
+- [.WtkRefreshProcessStatus WtkRefreshProcessStatus]
+- [.WtkSelectProcess WtkSelectProcess]
+- [.WtkTerminateProcessStatus WtkTerminateProcessStatus]
+.el
+.. - - - - - - - - - -
+- Module NLS helper functions
+.sl compact
+- [.WtkGetNlsPackageFilename WtkGetNlsPackageFilename]
+- [.WtkLoadNlsInfFile WtkLoadNlsInfFile]
+- [.WtkLoadNlsResourceModule WtkLoadNlsResourceModule]
+- [.WtkGetModNlsPackageFilename WtkGetModNlsPackageFilename]
+- [.WtkLoadModNlsInfFile WtkLoadModNlsInfFile]
+- [.WtkLoadModNlsResourceModule WtkLoadModNlsResourceModule]
+.el
+
+.ul
+.. - - - - - - - - - -
+- Online help:
+.ul compact
+- added main sections [.IDPNL_APINLS] and [.IDPNL_APIPROC]
+- removed obsolete statement from remarks section of
+  [.WtkQueryVersion WtkQueryVersion] that the [=TITLE]
+  would not be available as (runtime) DLL. This was the
+  case only with during development stages
+.el
+.. - - - - - - - - - -
+- Sample programs:
+.ul compact
+- added testcase for [.WtkQueryVersion WtkQueryVersion] to dynamic linkage sample (dynamic)
+- added testcase for [.WtkMoveFile WtkMoveFile] to file and directory functions sample (file)
+- added errorhandling for invalid netmask to settings and details manager WPS sample (setting\wps)
+- fixed minor error in XBIN2OBJ test sample
+- reworked testcase for [.WtkUpdateConfigsys WtkUpdateConfigsys] (faccess\cfgsys),
+  adding code to backup CONFIG.SYS before running the testcase, and restoring the
+  backup afterwards.
+- added sample programs
+  - NLS related functions sample (nls)
+  - PM helper functions sample (pm)
+  - process related functions sample (process)
+.el
+
+.. ----------------------------------------
+.2 Version 1.10
+.. ----------------------------------------
+.
+_*Fixed:*_
+.ul
+- [.WtkQueryFileFDateTime WtkQueryFileFDateTime] reported wrong timestamp
+
+_*New:*_
+
+.ul
+- Module helper functions (EXE and DLL)
+.sl compact
+- [.WtkGetModulePath WtkGetModulePath ]
+.el
+.. - - - - - - - - - -
+- PM control helper functions
+.sl compact
+- [.WtkAddTextResourceToMLE WtkAddTextResourceToMLE]
+.el
+.. - - - - - - - - - -
+- System helper functions
+.sl compact
+- [.WtkIsOS2 WtkIsOS2]
+- [.WtkIseComStation WtkIseComStation]
+- [.WtkQueryBootDrive WtkQueryBootDrive]
+- [.WtkQueryOperatingSystem WtkQueryOperatingSystem]
+- [.WtkQuerySysLanguage WtkQuerySysLanguage]
+- [.WtkReboot WtkReboot]
+.el
+.. - - - - - - - - - -
+- File helper functions
+.sl compact
+- [.WtkDeleteFile WtkDeleteFile]
+- [.WtkFileIsEmpty WtkFileIsEmpty]
+- [.WtkFileMaskExists WtkFileMaskExists]
+- [.WtkMoveFile WtkMoveFile]
+.el
+.. - - - - - - - - - -
+- File access functions for Syslevel files
+.sl compact
+- [.WtkCloseSyslevel WtkCloseSyslevel]
+- [.WtkOpenSyslevel WtkOpenSyslevel]
+- [.WtkQuerySyslevelInfo WtkQuerySyslevelInfo]
+- [.WtkSetSyslevelInfo WtkSetSyslevelInfo]
+.el
+.. - - - - - - - - - -
+- File access functions for text initialization files
+.sl compact
+- [.WtkCloseInitProfile WtkCloseInitProfile]
+- [.WtkCloseInitProfileBackup WtkCloseInitProfileBackup]
+- [.WtkInitProfileModified WtkInitProfileModified]
+- [.WtkOpenInitProfile WtkOpenInitProfile]
+- [.WtkQueryInitProfileSize WtkQueryInitProfileSize]
+- [.WtkQueryInitProfileString WtkQueryInitProfileString]
+- [.WtkWriteInitProfileString WtkWriteInitProfileString]
+.el
+.. - - - - - - - - - -
+- File access functions for CONFIG.SYS
+.sl compact
+- [.WtkUpdateConfigsys WtkUpdateConfigsys]
+.el
+
+.ul
+.. - - - - - - - - - -
+- Online help:
+.ul compact
+- converted most parts (except function reference) to
+  [http://hobbes.nmsu.edu/cgi-bin/h-search?key=htext HyperText/2]
+  preprocessor source format
+- added revision history
+- reworked guide sections
+  - [.IDPNL_APITMF]
+  - [.IDPNL_APISET]
+  - [.IDPNL_APIEAS]
+  - [.IDPNL_APIMMF]
+
+.. ----------------------------------------
+.2 Version 1.00
+.. ----------------------------------------
+.
+First public release
+
+.. ----------------------------------------
+.1 Contact
+.. ----------------------------------------
+.an IDPNL_CONTACT
+.
+If you have suggestions for or problems with the [=TITLE],
+send email to
+.sl compact
+- [mailto:wpstk@netlabs.org]
+
+As soon as the project team grows to some more members, we will also install
+a mailing list.
+
+.. ----------------------------------------
+.1 Authors
+.. ----------------------------------------
+.an IDPNL_AUTHORS
+.
+Currently, the following persons have contributed and/or integrated code
+to the *Workplace Shell Toolkit*:
+
+.pl tsize=4
+..
+- *Christian Langanke* [mailto:cla@clanganke.de]
+= Inventor of the WPS toolkit, author of *Animated mouse Pointer for OS/2*,
+  contributor to *XWorkplace*, coded and/or integrated all of the functions of the
+  first release of the [=TITLE], including the makefiles and batch files
+  required for compilation.
+.
+  See his homepage for lots of free utilities for *OS/2* and *eComStation* at:
+.
+  [http://www.clanganke.de/os2]
+
+Code from [.IDPNL_CREDITS other developers] have been integrated into
+the [=TITLE] by the current authors.
+
+.. ----------------------------------------
+.1 Credits
+.. ----------------------------------------
+.an IDPNL_CREDITS
+.
+[=TOPICS]
+.su V30
+
+.. ----------------------------------------
+.2 Credits to contributors
+.. ----------------------------------------
+.an IDPNL_CREDITS_CONTRIB
+.
+Please note the following credits and thank-yous (newest entries first):
+.pl tsize=4
+- *Chris Wohlgemuth* [mailto:cinc@netlabs.org]
+= for discussing WPS issues, especially helping in fixing the trap of the WPS
+  sample when implementing support for the Open Watcom compiler
+- *Steven Levine* [mailto:steve53@earthlink.net]
+= for reporting bugs in the build system, library and WPS sample code
+- *Michael K. Greene* [mailto:greenemk@cox.net]
+= for giving valuable hints for implementing support for the Open Watcom compiler
+- *Radim Kolar* [mailto:2:423/66.111@FidoNet.Org]
+= for making his CRC package with source public domain.
+  It was the basis for the *CRC related helper functions* of this toolkit.
+- *Sergey I. Yevtushenko* [mailto:es@os2.kiev.ua]
+= for his MMF library. This was the base for the
+  [.IDPNL_APIMMF_OVERVIEW Memory Mapped Files Manager] API in this toolkit,
+  where it was extended to have a separate manager for each tread.
+.
+  See also Sergey's article
+.
+  [http://www.edm2.com/0610/memorymap.html Memory-Mapped files in OS/2]
+.
+  in the *Electronic Developers Magazine* (EDM/2) issue of 10/1998.
+...
+- *Yuri Dario* [mailto:mc6530@mclink.it]
+= for extensions to the [.IDPNL_APIMMF_OVERVIEW Memory Mapped Files Manager] API
+  for handling already opened files
+- *Ulrich Moeller* [mailto:ulrich.moeller@rz.hu-berlin.de]
+= Inventor of the *XWorkplace* and *WarpIn* packages, for giving a lot of ideas
+  via telephone and by making his packages OpenSource on Netlabs.
+.
+  See the home of *XWorkplace* and *WarpIn* at
+.
+  [http://www.xworkplace.org]
+...
+
+.. ----------------------------------------
+.2 General credits
+.. ----------------------------------------
+.an IDPNL_CREDITS_GENERAL
+.
+Please note the following credits and thank-yous (newest entries first):
+.pl tsize=4
+- *Adrian Gchwendt* [mailto:ktk.netlabs.org]
+= for founding and maintaining the idea and services of netlabs.org for
+  OS/2 and eComStation developers.
+- *Eberhard Mattes*
+= for the first port of a GCC compiler for OS/2. Although neglected for
+  years now, this has been the base for many ports of unix-alike software
+  to OS/2
+- *Innotek* [http://www.innotek.de]
+= for the port and maintenance of the GCC 3.x compiler (special thanks to bird!)
+- *Michal Necasek* [mailto:michaln@prodigy.net]
+= for maintaining the [http://www.openwatcom.org Open Watcom Compiler]
+
+.. ----------------------------------------
+.1 Appendix: Building the Workplace Shell Toolkit library / samples
+.. ----------------------------------------
+.an IDPNL_BUILD
+.
+[=TOPICS]
+.su V30 1
+
+.. ----------------------------------------
+.2 makefiles
+.. ----------------------------------------
+.an IDPNL_BUILD_MAKEFILES
+.
+The [=TITLE] provides makefiles for the
+supported compilers, where each source directory contains both a
+.pl compact tsize=20 break=none
+- *makefile*
+= being the makefile for *NMAKE* (for IBM compilers only), and a
+..
+- *GNUmakefile*
+= being the makefile for *GNU make* (for GCC compilers only)
+
+Each of them includes a file from within the the *config* directory,
+which determines all the compiler and linker flags etc. and the relative
+pathnames to the directories holding object modules, libraries, etc.
+to be created during the build.
+
+.. ----------------------------------------
+.2 created/used directories
+.. ----------------------------------------
+.an IDPNL_BUILD_DIRECTORIES
+.
+All created files are being written to the directories:
+.pl tsize=20 break=none
+- *compile*
+= for object modules, sample program executables, other intermediate files
+.
+  The subdirectories cset2s, cset2m, vac3, emx, gcc and watcom contain the files
+  according to the used compiler and,
+  for the IBM CSet/2 compiler, also according to the thread mode (mixing of
+  singlethreaded or multithreaded code not allowed with this).
+..
+- *ipf*
+= for intermediate files required to create the online help file.
+.
+  This directory is being created only when compiling the
+  [.IDPNL_DISTRIB source distribution], otherwise, it already exists.
+..
+- *lib*
+= for the [=TITLE] library file to be linked with your application
+.
+[=NOTE]
+.ul compact
+- when you compile the [=TITLE] yourself, the resulting libraries
+  are put into directories named either *debug* or *release* instead of
+  *lib*, depending on the debug status during compilation.
+.el
+.
+  The subdirectories cset2s, cset2m, vac3, emx, gcc and watcom contain the library file
+  according to the used compiler and,
+  for the IBM CSet/2 compiler, also according to the thread mode (mixing of
+  singlethreaded or multithreaded code not allowed with this).
+.
+  This directory is being created only when compiling the
+  [.IDPNL_DISTRIB source distribution], otherwise, it already exists.
+..
+- *book*
+= for the documentation files in INF format
+.
+  This directory is being created only when compiling the
+  [.IDPNL_DISTRIB source distribution], otherwise, it already exists.
+
+If these directories do not exist, the make process creates them when being invoked
+for the first time.
+
+.. ----------------------------------------
+.2 compiler dependant include files
+.. ----------------------------------------
+.an IDPNL_BUILD_CONFIG
+.
+The makefile process of the [=TITLE] is being configured by
+several include files. As for different compilers
+[.IDPNL_BUILD_MAKEFILES different make utilities] are used, the
+include files used are also different regarding to the compiler
+or make utility.
+
+See the following sections for details about include files used by the
+(GNU)makefiles for your compiler:
+.su H50
+
+.. ----------------------------------------
+.3 IBM compilers and Watcom compiler
+.. ----------------------------------------
+.an IDPNL_BUILD_CONFIG_IBMWATCOM
+.
+The following files are used by the makefiles of the [=TITLE]
+in order to define flags and inference rules for usage with the IBM compilers.
+Normally the makefile process should only be configured by the project team,
+if you require changes, please tell the team about it.
+..
+.pl tsize=25 break=none
+..
+- makefile
+= makefile for *NMAKE* in each source directory
+..
+- config\rules.in
+= This file is included by all makefiles (#makefile# in each
+  source directory) of the [=TITLE].
+.
+  It determines flags and inference rules for most tools and utilities used
+  for the compilation process.
+.
+  Please do not modify this file !
+..
+- config\project.in
+= This file is included by config\rules.in
+.
+  This is the project specific extension to config\rules.in.
+..
+- config.cmd
+= This program is called by project.in to perform the following tasks:
+.ul compact
+- determine the current compiler and tookit
+- determine if NMAKE is compiling sources in the developer tree or within
+  an installation tree of a binary release (results in different directories
+  where the libraries *wpstk**.lib* can be found)
+.el
+
+.. ----------------------------------------
+.3 GCC compilers
+.. ----------------------------------------
+.an IDPNL_BUILD_CONFIG_GCC
+.
+The following files are used by the makefiles of the [=TITLE]
+in order to define flags and inference rules for usage with the
+[.IDPNL_SUPPORTED_GCC supported GCC compilers].
+Normally the makefile process should only be configured by the project team,
+if you require changes, please tell the team about it.
+..
+.pl tsize=25 break=none
+..
+- GNUmakefile
+= makefile for *GNU make* in each source directory
+..
+- config\GNUrules.in
+= This file is included by all makefiles (#GNUmakefile# in each
+  source directory) of the [=TITLE].
+.
+  It determines flags and inference rules for most tools and utilities used
+  for the compilation process.
+.
+  Please do not modify this file !
+..
+- config\GNUproject.in
+= This file is included by config\GNUrules.in
+.
+  This is the project specific extension to config\GNUrules.in.
+..
+- config.cmd
+= This program is called by GNUproject.in to perform the following tasks:
+.ul compact
+- determine the current compiler and tookit
+- determine if GNU make is compiling sources in the developer tree or within
+  an installation tree of a binary release (results in different directories
+  where the libraries *wpstk**.lib* can be found)
+- if not already exists, creates OMF versions of the GCC libraries (.a to .lib)
+  in the #lib# directory of the GCC compiler tree.
+- creates modified copies of some Workplace Shell headers to work with emx and GCC
+- for IBM Toolkit for OS/2 WARP 4, creates a modified copy of os2def.h to eliminate
+  keywords for thunking not being supported by emx or GCC
+  (normally not used by WPS classes anyway...)
+.el
+
+.. ----------------------------------------
+.1 Appendix: Extending the [=BASETITLE]
+.. ----------------------------------------
+.an IDPNL_EXTEND
+.
+[=TOPICS]
+.su V30 1
+
+.. ----------------------------------------
+.2 Join the project team
+.. ----------------------------------------
+.an IDPNL_EXTEND_TEAMWORK
+.
+.at fc=red
+Anyone, who extends the [=TITLE], is kindly asked to do so
+using the *Netlabs Open Source Archive* for this project instead of modifying
+and redistributing it separately. This way all users of the [=TITLE]
+benefit directly.
+.at
+
+Most important, is has to be made sure that if new source files are being introduced
+to the toolkit, they can be compiled with all of the supported compilers, requiring
+also the update of both the #makefile# for the IBM compilers and the #GNUmakefile#
+for the GCC compilers. The biggest problem is that the *NMAKE* and *GNU make*
+work differently at some important points. While it may be not that difficult to
+make slight modifications in both types of makefiles, testing it can likely be
+done most effectively by the project team.
+
+When introducing new functions, anyone wanting to do so is kindly asked to follow the
+naming scheme for functions, variables and files, which has been mostly adopted from the
+*IBM Toolkit for OS/2 WARP 3/4*, and the layout of sourcefiles. This is the
+only way to make sure that the [=TITLE] will stay to be a
+consistent piece of software, presenting a homogeneous API to the user.
+
+.. ----------------------------------------
+.2 Getting the source from Netlabs
+.. ----------------------------------------
+.an IDPNL_EXTEND_GETSOURCE
+.
+In order to get the up-to-date source code of the [=TITLE],
+you can access the *Netlabs Open Source Archive*. For that, you need
+to use the *Concurrent Version System* (CVS), and it is recommended
+to also use the *Netlabs Open Source Archive client* (NOSAC).
+
+With these packages you can donwload the current code, being read up-to-date
+from the *Netlabs* CVS server, and, if you would like to join the
+project team, can later upload bugfixes or extensions to the
+[=TITLE].
+
+See
+.ul compact
+- [http://www.netlabs.org netlabs.org homepage]
+- [http://www.netlabs.org/nosa The Netlabs Open Source Archive]
+
+to get more information about Netlabs, Open Source, the Open Source Archive and
+to download the required software.
+
+.. ----------------------------------------
+.2 Source Code Notation Conventions
+.. ----------------------------------------
+.an IDPNL_EXTEND_SRCNAME
+.
+The following notation conventions are used in the source of
+the [=TITLE]:
+.ul
+..
+- All external function names in library sources start with *Wtk*.
+..
+- The names of the parameter variables in the prototypes of the functions
+  (being included in the header files) and the names of the parameter variables
+  being used in the [.IDPNL_EXTEND_DOCSOURCE documentation comments]
+  (being part of the C source) must be identical, otherwise the generation of the
+  online documentation will report warnings that documentation comments for
+  certain parameters of certain functions are missing.
+.
+.
+  This is due to the fact that the script generating the online help file first
+  scans the header files for prototypes, and then searches the documentation comments
+  in the source files.
+.
+.
+  Of course, also the names of the parameter variables used in the library source
+  should be identical to these being used in the headers and the online docs
+..
+- All internal function names start with a double underscore and are to be
+  marked as #static#, so that they are not exported.
+..
+- All type names not being used from the C compiler runtime are written
+  with uppercase letters only.
+..
+- All type names not being used from the C compiler runtime and being a pointer
+  to a type are named with "Pxxxxxxx", where "xxxxxxx" is the data type being pointed to.
+..
+- All variable names not being of a type used by the C compiler
+  start with an abbreviation according to the variable type,
+  just like mostly in the *Toolkit for OS/2 Warp*.
+  Here are some examples:
+.pl compact tsize=15 break=none
+- _*type*_
+= _*example for variable names*_
+- BOOL
+= *f*Variable
+- SHORT
+= *s*Variable
+- USHORT
+= *us*Variable
+- LONG
+= *l*Variable
+- ULONG
+= *ul*Variable
+- CHAR
+= *sz*Variable
+- PSZ
+= *psz*Variable
+- PBYTE
+= *pb*Variable
+- PVOID
+= *pv*Variable
+.el
+.
+.
+  There are some exceptions (as always) for this rule, where other prefixes
+  are widely used.
+.ul compact
+- If name types and thus resulting prefixes are very long, sometimes shorter prefixes
+  are being used. For example, when coding for extended attributes, a pointer
+  of type *PFEA2LIST* is mostly prefixed with *pfea2l*. Also when using
+  structures of *DATETIME*, very often the variable or the prefix *dt*
+  is used.
+- For types of the C compiler runtime, there also may be widely used abbreviations
+  that can also be used instead of the full type name.
+.el
+..
+- Al include files shall follow the same layout. See the layout of existing
+  header files in the *include* directory.
+..
+- In header files of the library, C++ comments (double slash) must not be used.
+  Although all makefiles of the toolkit use compiler flags allowing such comments,
+  the library headers should also be useable with programs, where the programmes
+  do not want to allow them.
+
+.. ----------------------------------------
+.2 Source File Naming Conventions/Restrictions
+.. ----------------------------------------
+.an IDPNL_EXTEND_FILENAMES
+.
+The intention of the [=TITLE] is (with only
+few exceptions) to obey the 8.3 notation for all files in such a manner
+that a compiled version of the library can be installed on a FAT-formatted
+drive.
+
+For the IBM compilers, it is intended also to be possible to compile
+the sample programs on that FAT drive. Note that this is not possible
+for the GCC compilers using GNU make, because the makefiles for this are
+named *GNUmakefile*.
+.
+As a workaround, one could unpack all files
+called *GNUmakefile* an a HPFS drive and copy them over the
+files called *makefile* on the FAT drive. This of course would
+lead to not being able to use the IBM compilers and NMAKE anymore with this
+installation.
+
+The 8.3 notation is to be obeyed within the following
+directories:
+
+.pl tsize=17 break=none bold
+..
+- bin
+= containing the REXX scripts for supporting the make process
+..
+- book
+= containing the resulting online documentation files
+..
+- config
+= containing the configuration and help files for the make process
+..
+- include
+= containing the header files of the library
+..
+- lib
+= containing the resulting library file(s) with a binary distribution
+..
+- samples
+= containing the sample programs. The only files being allowed not to
+  comply to the 8.3 scheme are the files called *GNUmakefile*.
+..
+- ship
+= containing some files being required to build a binary distribution
+..
+- source\lib
+= containing the source files
+.
+  Despite of the fact that the source directory would not be shipped
+  with a binary distribution, all .c files must be named exactly like
+  the header files (and thus obey the 8.3 scheme) in order not to break
+  the build of the online help.
+
+The following directories may contain filenames not complying
+to the 8.3 naming scheme, as they are only required to build the library
+and online doc files, and not being shipped with a binary distribution:
+.pl tsize=17 break=none bold
+- compile
+= containing the intermediate files for compiling the library and samples
+.
+.
+  Where the subdirectory gcc exists, it contains files of the toolkit adapted
+  to the GNU compiler.
+..
+- ipf
+= containing the intermediate files for compiling the docs
+..
+- source\book
+= containing the source files
+
+.. ----------------------------------------
+.2 Source Code Categories
+.. ----------------------------------------
+.an IDPNL_EXTEND_CATEGORIES
+.
+Two types of source code categories exist within
+the [=TITLE]:
+
+.pl tsize=10 break=none
+..
+- minor
+= This category is for the so called little helper or utility functions.
+.
+  The following applies to functions falling into a minor category:
+.ul compact
+- the name of the source and the include file for that category starts with
+  *wtku*, leaving four more characters for distincting between this and other
+  files of a minor category.
+- the include file for such category has to be included by wtku.h
+- the include symbol for such category has to start with INCL__WTKUTL
+- the included symbol for such category has to be WTKUTLxxxxxx__INCLUDED
+  and defines the text being used in the online help within the functions
+  overview page. This text must include the term "helper functions" in
+  order to distinct between minor and major categories.
+  The text being defined by this symbol is being used as a headline for the
+  category within the [.IDPNL_FUNCS] Overview.
+.el
+..
+- major
+= This category is for the so called major APIs, each consisting of
+  a lot of related functions being desinged to support a special task.
+.
+  The following applies to functions falling into a major category:
+.ul compact
+- the name of the source and the include file for that category starts with
+  *wtk*, leaving five more characters for distincting between this and other
+  files of a minor category.
+- the include file for such category has to be included at the end of wtk.h
+- the include symbol for such category has to start with INCL__WTK
+- the included symbol for such category has to be WTKxxxxxx__INCLUDED
+  and defines the text being used in the online help within the functions
+  overview page. This text must NOT include the term "helper functions"
+  in order to distinct between minor and major categories.
+  The text being defined by this symbol is being used as a headline for the
+  category within the [.IDPNL_FUNCS] Overview.
+
+.. ----------------------------------------
+.2 Adding functions to existing files of the library source
+.. ----------------------------------------
+.an IDPNL_EXTEND_NEWFUNCS
+.
+The following applies, if you want to add new functions to existing source files
+of the the [=TITLE]:
+.su H50
+
+.. ----------------------------------------
+.3 Overview
+.. ----------------------------------------
+.an IDPNL_EXTEND_NEWFUNCS_DETERMINE
+.
+The following applies, if you want to add new functions to existing source files
+of the the [=TITLE]:
+.ul
+..
+- determine, wether your functions fall into an existing category.
+  If you have to only add a few functions, they possibly fall into an existing category.
+  If you add some more to a lot of functions, they very likely require a new category,
+  and it might be useful to introduce a new major category.
+.
+  If they fall into a category that already exists, read further here.
+  If they fall into a non-existing category, see
+.sl compact
+- [.IDPNL_EXTEND_NEWFILES]
+.el
+..
+- Please read (and mostly obey) the [.IDPNL_EXTEND_SRCNAME]
+..
+- Please make sure that new functions do not interfere with existing ones.
+  A good way to ensure this is to ask the project team!
+..
+- If your new function(s) make sense to be part of an already existing category,
+  [.IDPNL_EXTEND_NEWFUNCS_ADDTOSOURCE add your function to an existing source file].
+  If you are not sure about wether this is the case, or wether you should open a new
+  category, ask the project team! More, you should
+  [.IDPNL_EXTEND_NEWFUNCS_ADDTOSAMPLE extend the sample program for that category]
+  in order to let your new function(s) be automatically tested.
+..
+- Last, but not least, you should well
+  [.IDPNL_EXTEND_DOCSOURCE add documentation comments] to the source files,
+  so that the online help can be generated properly. The make process for the online help
+  will generate warnings for each function or parameter of a function, for that no
+  documentation comment exists.
+
+.. ----------------------------------------
+.3 Modifying an existing source file
+.. ----------------------------------------
+.an IDPNL_EXTEND_NEWFUNCS_ADDTOSOURCE
+.
+If you add a single function or only a few functions, which fall into an
+[.IDPNL_EXTEND_CATEGORIES existing source code category],
+adding a new function is fairly easy. In order to have about the same layout,
+it is recommended to copy an existing function and modify it. Please make sure
+that you also [.IDPNL_EXTEND_DOCSOURCE add the documentation comments] for your new
+API(s).
+
+In most cases it makes sense to not just append the new function(s) at the end of
+the source file, but rather place it beneath certain existing functions in order
+to group functions, where they serve the same task or belong together in any other
+sense. In general, the functions are to be placed in the same order as their prototypes
+in the header file corresponding to the source file.
+
+You also have to [.IDPNL_EXTEND_NEWFUNCS_ADDTOHEADER add the function prototype
+to the header file] corresponding to the source file that you have added your
+new function(s) to.
+
+If your code required new internal datatypes, thus only be used by
+your code, place them into the .c source file before the first (helper) function.
+Only datatypes and structures being used by the caller of your code are to b
+e placed in the header file corresponding to the source file.
+.
+See *source\lib\wtkset.c* as an example for a source file introducing
+datatypes being used internally.
+
+See also
+.sl compact
+- [.IDPNL_EXTEND_SRCNAME]
+.el
+
+.. ----------------------------------------
+.3 Modifying an existing header file
+.. ----------------------------------------
+.an IDPNL_EXTEND_NEWFUNCS_ADDTOHEADER
+.
+If you add a single function or only a few functions, which fall into an
+[.IDPNL_EXTEND_CATEGORIES existing source code category],
+add the prototype(s) of the new function(s) to the header file of that
+category.
+
+If you need to introduce new datataypes that are being used by the caller
+of your code, place them before the first prototype.
+.
+See *include\wtkset.h* as an example for a header file introducing
+datatypes being used by the caller of an API.
+
+In most cases it makes sense to not just append the prototype(s) of the new
+function(s) at the end of the header file, but rather place it beneath certain
+existing functions in order to group functions, where they serve the same task
+or belong together in any other sense. In general, the prototypes of the functions
+shall be placed in the same order as their code appears in the code file
+corresponding to the header file.
+
+See also
+.sl compact
+- [.IDPNL_EXTEND_SRCNAME]
+
+.. ----------------------------------------
+.3 Extending an existing sample progam
+.. ----------------------------------------
+.an IDPNL_EXTEND_NEWFUNCS_ADDTOSAMPLE
+.
+If you add a single or only a few functions, which fall into an
+[.IDPNL_EXTEND_CATEGORIES existing source code category],
+extend the sample program for that category in order to let your new function(s)
+be automatically tested.
+
+See the existing sample programs in the subdirectory *samples* as examples.
+
+At least some code should be added that tests, wether the code works ok.
+With some APIs, it is also important to test, wether the API fails under a
+certain condition.
+
+VIO sample programs should always return zero, if all works well, because
+otherwise a *make run* from the top level makefile would also break
+out because of the non-zero return code - this breaks the method of testing all
+VIO sample programs with one make call.
+.
+So if an API is expected to fail, set rc to NO__ERROR to ignore the error.
+
+Workplace Shell sample programs are not being installed with *make run*.
+The user has to (de)install them with
+.sl compact
+- *make (de)install*
+
+See the make file of the WPS sample program in the subdirectory
+*samples\settings\wps* as an example.
+
+.. ----------------------------------------
+.2 Adding new files to the library source
+.. ----------------------------------------
+.an IDPNL_EXTEND_NEWFILES
+.
+The following applies, if you want to add new source files
+of the the [=TITLE]:
+.su H50
+
+.. ----------------------------------------
+.3 Overview
+.. ----------------------------------------
+.an IDPNL_EXTEND_NEWFILES_DETERMINE
+.
+If you want to add new functions to
+the [=TITLE] and are required to
+add new source files to the library, perform the following steps:
+..
+.ul
+..
+- determine, wether your functions fall into an existing category.
+  If they fall into a category that do not already exists, read further here.
+  If they fall into an existing category, see
+.sl compact
+- [.IDPNL_EXTEND_NEWFUNCS]
+.el
+..
+- When creating a new category,
+  [.IDPNL_EXTEND_CATEGORIES determine the type of category] that should be created.
+.
+  If you have to only add a few functions, they should possibly form a minor category.
+  If you add some more to a lot of functions, it might make more sense to open a major category.
+  A good way to be sure of that is to ask the project team!
+..
+- Please read (and mostly obey) the [.IDPNL_EXTEND_SRCNAME]
+..
+- Please make sure that new functions do not interfere with existing ones.
+  A good way to ensure this is to ask the project team!
+..
+- Opening a new category requires to
+  [.IDPNL_EXTEND_NEWFUNCS_ADDTOSOURCE add completely new files]
+  to the [=TITLE]. This most likely will also require you to
+  [.IDPNL_EXTEND_NEWFILES_CREATESAMPLE add a completely new sample program]
+  in order to let your new function(s) be automatically tested.
+..
+- Last, but not least, you should well
+  [.IDPNL_EXTEND_DOCSOURCE add documentation comments] to the source files,
+  so that the online help can be generated properly. The make process for the online help
+  will generate warnings for each function or parameter of a function, for that no
+  documentation comment exists.
+
+.. ----------------------------------------
+.3 Create a new source file
+.. ----------------------------------------
+.an IDPNL_EXTEND_NEWFILES_CREATESOURCE
+.
+If you introduce a [.IDPNL_EXTEND_CATEGORIES new source code category],
+this requires to add a completely new source file to the [=TITLE].
+
+In order to have fairly the same layout, it is recommended to copy an existing source
+file, remore all functions out of it, modify the comments and includes
+and then add the code of your functions to them.
+Please make sure that you also [.IDPNL_EXTEND_DOCSOURCE add documentation comments],
+when you are done.
+
+Building a toolkit for others to use, it is very important to think about how the function
+prototypes could look like, before you actually code it, so it is mostly a good strategy
+to also create the [.IDPNL_EXTEND_NEWFILES_CREATEHEADER new header file] before actually
+start the coding.
+
+Please also try to make the API look and feel like a "normal" OS/2
+API. Surely not all of the OS/2 APIs are well designed, but it also would be a bad thing,
+if the API of the [=TITLE] would be too different from them.
+
+See also
+.sl compact
+- [.IDPNL_EXTEND_SRCNAME]
+
+.. ----------------------------------------
+.3 Create a new header file
+.. ----------------------------------------
+.an IDPNL_EXTEND_NEWFILES_CREATEHEADER
+.
+If you introduce a [.IDPNL_EXTEND_CATEGORIES new source code category],
+this requires to add a completely new header file to the [=TITLE].
+
+In order to have fairly the same layout, it is recommended to copy an existing header
+file, remore all prototypes out of it, modify the comments,
+include and included symbol definitions (very important !!!!) and then add the prototypes
+of your functions to them.
+
+Building a toolkit for others to use, it is very important to think about how the function
+prototypes could look like, before you actually code it.
+
+Please also try to make the API look and feel like a "normal" OS/2
+API. Surely not all of the OS/2 APIs are well designed, but it also would be a bad thing,
+if the API of the [=TITLE] would be too different from it.
+
+See also
+.sl compact
+- [.IDPNL_EXTEND_SRCNAME]
+
+.. ----------------------------------------
+.3 Extending the makefiles for new source files
+.. ----------------------------------------
+.an IDPNL_EXTEND_NEWFILES_EXTENDMAKEFILE
+.
+If you introduce a [.IDPNL_EXTEND_CATEGORIES new source code category],
+this requires to extend the makefiles, so that your new source module is being
+compiled and being placed into the library of the [=TITLE].
+
+For that, you have to add the following to both the *makefile* and the
+*GNUmakefile*:
+.ul compact
+- add the object module to the macro *OBJS*
+- add a dependency for your object module, so that it is recompiled,
+  if the header file changes
+
+[=NOTE]
+.ul compact
+..
+.at fc=red
+- Do not edit the *GNUmakefile* with an editor that
+replaces tabs with blanks (like TEDIT), as GNU make requires commands within
+rules to be preceeded by at least one tab.
+.at
+..
+- within a *makefile*, the object module and header file needs to be
+  prepended with the path, where the file has to be written or read.
+  For this, use the macros already being used for existing entries.
+..
+- within a *GNUmakefile*, the object module and header file MUST NOT
+  be prepended with any path. Also here see the existing entries and
+  add the new entry accordingly.
+
+Of course it makes sense to test with all supported compilers, wether
+the library is being properly compiled, including your new module. If you
+do not have all supported compilers available, ask the project team to help
+you.
+
+.. ----------------------------------------
+.3 Create a new sample program
+.. ----------------------------------------
+.an IDPNL_EXTEND_NEWFILES_CREATESAMPLE
+.
+When opening a [.IDPNL_EXTEND_CATEGORIES new source code category], you
+are required to create a new sample
+program that tests your new function(s) automatically. For this, a sample
+program should call all of your functions at least once (and do somethimg
+senseful, of course). The following topics are important, when creating a
+new sample program:
+
+
+_*Creating a VIO sample program*_
+
+For all categories, at least a VIO sample program should be created. If some of
+your APIs cannot be executed outside a SOM environment like for the settings
+manager API, the VIO sample programm can leave them out. A good way to be able
+to test at least some of the functions is to use dummy pointers instead of real SOM self
+pointers, where possible. For this the library code should not call real SOM APIs
+in DEBUG mode, where possible. See macro OBJECTVALID() in *source\lib\wtkset.c*
+as an example how to avoid calling SOM methods in DEBUG mode.
+
+VIO sample programs should always return zero, if all works well, because
+otherwise a *make run* from the top level makefile would also break
+out because of the non-zero return code. This breaks the method of testing all
+VIO sample programs with one make call.
+.
+So if an API is expected to fail, set rc to NO__ERROR to ignore the error.
+
+
+_*Creating a sample Workplace Shell Class*_
+
+For testing certain APIs, it cannot be avoided to code real SOM/Workplace Shell classes.
+See the WPS sample for the settings manager in the directory *samples\settings\wps*
+as an example.
+
+
+_*Calling all functions of a category*_
+
+If a function itself calls several functions of the same category at a time,
+for testing purposes a call to this function is sufficient to regard also the
+called functions as tested (Example: WtkGetNextEaValue calling
+WtkReadEa, WtkFindFirstEaValue, WtkFindNextEaValue and WtkCloseEa).
+Nevertheless it might still make sense to implement also calls to the indirectly
+tested functions in order to provide also a code sample to the users of the library.
+
+
+_*Choosing a name for the program*_
+
+Each sample program has a subdirectory below *samples*.
+The name has to be unique among the samples, because all sample program
+executables are being created in the same subdirectory of either
+*debug* or *release* (depending on the debug status when compiling).
+.
+Therefore most sample programs and their directory are named as follows:
+.ul compact
+..
+- create a directory below *samples* with a name with up to seven characters
+..
+- if you create both a vio and a WPS sample, create the subdirectories *vio*
+  and *wps* in that directory, otherwise use the directory itself for the vio sample.
+..
+- create at least
+  - a source file named like the directory. For VIO samples, the name has to be
+    preceeded by an underscore. This will prevent to name sample programs like
+    existing OS/2 commands etc.. For WPS samples, this does not apply, and you
+    will call the main source files and thus the WPS DLL anything line #xxx#cls.**.
+    Also for such DLLs make sure that the name is unique among all WPS class samples.
+    Other files being generated like resource files have also to be named uniquely
+    among all WPS samples. It is good practise to name all generated files with the
+    name of the testclass source file in order to avoid any name problems.
+  - a readme file named *readme.1st*, containing informations about the sample program.
+    Take a *readme.1st* of an existing sample program as a template.
+  - a *makefile* containing the rules and macros for use with *NMAKE* and
+    the IBM compilers. Take a *makefile* of an existing sample program as a template.
+  - a *GNUmakefile* containing the rules and macros for use with *GNU make* and
+    the GCC compilers. Take a *GNUmakefile* of an existing sample program as a template.
+
+
+_*Things to care for when creating makefiles*_
+
+As VIO sample programs are rather small, they mostly consist only of a single
+C source file. So when taking the makefiles of an existing sample as a template,
+you mostly have only to modify
+.ul compact
+- the top comment line
+- the value of the macro *DESCRIPTION*
+- the value of the macro *STEM*
+
+Of course the top comment line and the description of the makefile should
+have an equivalent content, like in the existing samples.
+
+In case of a WPS sample, things are much more complicated.
+Very important is for example that the .c file being maintained by the SOM
+compiler is written in the sample source directory, but all headers and module
+definition files in the compile directory. Make sure to use the appropriate
+inference rules in both makefiles.
+
+It is recommended to use the existing WPS sample for the settings and
+details manager in the *samples\settings\wps* directory as a
+template.
+
+[=NOTE]
+.ul compact
+.at fc=red
+- Do not edit the *GNUmakefile* with an editor that
+replaces tabs with blanks (like TEDIT), as GNU make requires commands within
+rules to be preceeded by at least one tab.
+.at
+
+
+_*pseudotargets to be supported by makefiles of sample programs*_
+
+VIO sample programs should at least support the following make pseudotargets:
+.pl compact tsize=15 break=none
+- all
+= create the sample program
+- run
+= run the sample program. Note that executables are not being created in the
+  sample source directory, but below the $(BINDIR) subdirectory, so this is
+  an easy way to call the program.
+- debug
+= load the sample program into the debugger. Note that this is not possible
+  for emx compiled programs. For programs compiled with the Innotek GCC programs
+  can be debugged only if the debugger of a Visual Age compiler is installed.
+- clean
+= delete all files being created by the makefile while compiling the sample program
+
+[=NOTE]
+.ul compact
+- Currently, some samples take a directory pathname as an argument in order to there create
+  temporary files and/or directories. Make sure that your sample program receives the correct
+  parameters when called by the commands of the *run* and *debug* pseudotargets.
+
+WPS sample classes should at least support the following make pseudotargets:
+.pl compact tsize=15 break=none
+- all
+= create the WPS sample class
+- install
+= register the sample class and optionally create an instance of the object class
+  for testing purposes
+- deinstall
+= deregister the sample class
+
+[=NOTE]
+.ul compact
+- while the *run* and *debug* are not to be supported by the makefiles
+  of a WPS sample class, these targets should exist anyway and display a
+  warning message.
+
+
+_*Add the sample to the top level makefiles*_
+
+In order to enable the top level makefiles to build the new sample program,
+extend the following parts both in *makefile* and *GNUmakefile*
+in the top level directory:
+.pl compact
+- add a new pseudo target for your sample program
+.
+= copy the line of an existing pseudotarget as an example and modify the name
+  and the subdirectory within the commands.
+.
+.
+  Please place the new pseudotarget at the end of the appropriate section:
+.pl compact
+- VIO sample section
+= only a VIO sample program exists for the source category
+- VIO and SOM sample section
+= both a VIO and a SOM sample program exists for the source category
+- SOM sample section
+= only a SOM sample program exists for the source category
+.el
+- macro *ALL__SAMPLES*
+.
+= add the new pseudotarget to the list of pseudotargets for all samples
+.
+.
+- macro *VIO__SAMPLES*
+.
+= add the new pseudotarget to the list of pseudotargets for VIO samples,
+if you add a VIO sample
+.
+.
+- macro *SOM__SAMPLES*
+.
+= add the new pseudotarget to the list of pseudotargets for SOM samples,
+  if you add a SOM sample
+
+.. ----------------------------------------
+.2 Adding online help comments for new functions
+.. ----------------------------------------
+.an IDPNL_EXTEND_DOCSOURCE
+.
+After having added functions to the *Toolkit for OS/2 Warp*, you have to
+add documentation comments to the source file.
+To do so, you add the follwoing before the function:
+.ul
+..
+.. -------------------------------
+..
+- a C comment start
+.sl compact
+- */***
+.el
+..
+.. -------------------------------
+..
+- a start tag line for the syntax comment of the function
+.sl compact
+- *@@*functionname*@SYNTAX*
+.el
+.
+.
+Following to that line, you enter the text explaining the syntax in IPF style.
+This text should be as short and general as possible.
+.
+.
+In order to have a consistent look and feel of the online documentation,
+please do not use any IPF tags for the syntax explanation that modify
+the text style (as highlighting, changing colors etc.).
+..
+.. -------------------------------
+..
+- for each parameter of the function a start tag line for the parameter
+.sl compact
+- *@@*functionname*@PARM@*parametername*@*type
+.el
+.
+.
+As type, please specify either *in*, *out* or *inout*.
+.
+.
+Following to that line, you enter one (!) line for a brief comment. This line is
+not meant to take only one line in the source file, but rather be one line in terms
+of IPF source. This first IPF line is shown as a comment in the syntax section for
+the function. Terminate that first IPF line by a parameter break (:p.)
+on the first column of the line following the text of this line.
+.
+.
+Following to that first IPF line you can add more lines in order to give
+further explanations about the parameter.
+.
+.
+See existing documentation comments for similar variables as examples !!!
+..
+.. -------------------------------
+..
+- a start tag line for the return value of the function
+.sl compact
+- *@@*functionname*@RETURN*
+.el
+.
+.
+Following to that line, you enter one (!) IPF line for a brief comment.
+(see explanation above).
+.
+.
+Following to that first IPF line you can add more lines in order to give
+further explanations about the parameter.
+.
+.
+See existing documentation comments for similar return values as examples !!!
+..
+.. -------------------------------
+..
+- a start tag line for the remarks for the function
+.sl compact
+- *@@*functionname*@REMARKS*
+.el
+.
+.
+Add IPF text to further describe the function.
+..
+.. -------------------------------
+..
+- a end tag line
+.sl compact
+- *@@*
+.el
+..
+.. -------------------------------
+..
+- a C comment end
+.sl compact
+- **/**
+.el
+
+After having added all that for all the functions, that you added
+to the [=TITLE], (re)build the library documentation
+in order to check, wether your comments have properly been included.
+

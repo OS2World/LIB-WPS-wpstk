@@ -1,0 +1,24 @@
+
+$Id: SUPPORTD,v 1.6 2007-02-07 20:10:41 cla Exp $
+
+This file contains an overview about development tools
+being supported with the makefile concept of the WPS Toolkit
+
+Compilers and correspondig make utilities:
+----------------------------------------------------------------
+IBM C Set ++  Version 2.1       - nmake
+IBM VisualAge C++ Version 3.0   - nmake
+GCC of emx V0.9d                - GNU make
+Innotek  GCC for OS/2 v3.3.5    - GNU make
+Open Watcom V1.6                - nmake  (wmake -ms does not work !)
+
+special compiler features:
+----------------------------------------------------------------
+precompiled headers for VAC3  -  not yet implemented
+incremental linking for VAC3  -  prepared, but not yet implemented
+
+Toolkits:
+----------------------------------------------------------------
+IBM Toolkit for OS/2 WARP V4.5
+IBM Toolkit for eComStation
+

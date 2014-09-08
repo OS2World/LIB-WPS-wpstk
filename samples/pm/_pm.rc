@@ -1,0 +1,97 @@
+/****************************** Module Header *******************************
+*
+* Module Name: _pm.rc
+*
+* PM helper functions sample
+*
+* Copyright (c) WPS Toolkit Project - Christian Langanke 2004
+*
+* $Id: _pm.rc,v 1.7 2006-08-13 19:50:26 cla Exp $
+*
+****************************************************************************/
+
+#ifndef OS2_INCLUDED
+    #include <os2.h>
+#endif
+
+#include "_pm.rch"
+#include "_pmeng.rch"
+
+rcinclude _pm.dlg
+rcinclude _pm.men
+
+
+BITMAP IDBMP_MENUITEM item.bmp
+
+STRINGTABLE
+BEGIN
+  IDSTR_PAGESTATUS    IDT_IDSTR_PAGESTATUS
+END
+
+
+ACCELTABLE IDDLG_MAIN
+BEGIN
+   VK_F3,  IDMEN_EXIT,      VIRTUALKEY
+   VK_ESC, IDMEN_EXIT,      VIRTUALKEY
+END
+
+// #define help structures for each appliaction dialog
+// using the help panel id also for subtable ID
+// NOTE: the notebook dialogs and its pages are handled
+//       by WtkNotebookDlg automatically
+
+#define DUMMYSUBTABLE 0x100
+#define MENUSUBTABLE  0x101
+
+HELPTABLE IDDLG_MAIN
+BEGIN
+  // entry for main window
+  HELPITEM IDDLG_MAIN,                 MENUSUBTABLE,  IDPNL_MAINWINDOW
+
+  // entry for directory dialogs
+  HELPITEM IDDLG_DEFDIRDLG,            DUMMYSUBTABLE, IDPNL_DEFDIRDLG
+  HELPITEM IDDLG_DEFDIRDLGPRELOAD,     DUMMYSUBTABLE, IDPNL_DEFDIRDLGPRELOAD
+  HELPITEM IDDLG_CUSTDIRDLGPRELOAD,    DUMMYSUBTABLE, IDPNL_CUSTDIRDLGPRELOAD
+
+  // entry for the standard file dialog
+  HELPITEM DID_FILE_DIALOG,            DUMMYSUBTABLE, IDPNL_DEFFILEDLG
+
+  // entries for the result message boxes on directory and file dialogs
+  HELPITEM IDDLG_MSGBOX_RESULTDIRDLG,  DUMMYSUBTABLE,  IDPNL_RESULTDIRDLG
+  HELPITEM IDDLG_MSGBOX_RESULTFILEDLG, DUMMYSUBTABLE,  IDPNL_RESULTFILEDLG
+
+  // entries for the WinMessageBoxes launched by the meu items
+  HELPITEM IDMEN_ITEM1,                DUMMYSUBTABLE, IDPNL_RESULT_ITEM1
+  HELPITEM IDMEN_ITEM2,                DUMMYSUBTABLE, IDPNL_RESULT_ITEM2
+  HELPITEM IDMEN_ITEM3,                DUMMYSUBTABLE, IDPNL_RESULT_ITEM3
+  HELPITEM IDMEN_ITEMBITMAP,           DUMMYSUBTABLE, IDPNL_RESULT_ITEMBITMAP
+
+END
+
+// define an empty dummy help subtable for dialogs where we
+// don't intend // to support dialog control specific help panels
+HELPSUBTABLE DUMMYSUBTABLE
+BEGIN
+END
+
+// define a subtable for menu entries and attach it to the HELPITEM
+// of the window owning the menu (so the main window)
+HELPSUBTABLE MENUSUBTABLE
+BEGIN
+  HELPSUBITEM IDMEN_DEFNOTEBOOK,        IDPNL_ITEM_DEFNOTEBOOK
+  HELPSUBITEM IDMEN_OKNOTEBOOK,         IDPNL_ITEM_OKNOTEBOOK
+  HELPSUBITEM IDMEN_DEFDIRDLG,          IDPNL_ITEM_DEFDIRDLG
+  HELPSUBITEM IDMEN_DEFDIRDLGPRELOAD,   IDPNL_ITEM_DEFDIRDLGPRELOAD
+  HELPSUBITEM IDMEN_CUSTDIRDLGPRELOAD,  IDPNL_ITEM_CUSTDIRDLGPRELOAD
+  HELPSUBITEM IDMEN_DEFFILEDLG,         IDPNL_ITEM_DEFFILEDLG
+  HELPSUBITEM IDMEN_EXIT,               IDPNL_ITEM_EXIT
+
+  HELPSUBITEM IDMEN_ITEM1,              IDPNL_ITEM1
+  HELPSUBITEM IDMEN_ITEM2,              IDPNL_ITEM2
+  HELPSUBITEM IDMEN_ITEM3,              IDPNL_ITEM3
+  HELPSUBITEM IDMEN_ITEMBITMAP,         IDPNL_ITEMBITMAP
+END
+
+// non-standard resources
+RESOURCE RT_USER_DATAFILE IDRES_MLETEXT mletext.txt
+

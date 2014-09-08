@@ -1,0 +1,40 @@
+/****************************** Module Header *******************************
+*
+* Module Name: _pm.men
+*
+* PM helper functions sample
+*
+* Copyright (c) WPS Toolkit Project - Christian Langanke 2004
+*
+* $Id: _pm.men,v 1.7 2008-12-22 18:47:01 cla Exp $
+*
+****************************************************************************/
+
+#define MENUSEPARATOR MENUITEM "",-1,MIS_SEPARATOR
+
+MENU IDMEN_POPUP
+BEGIN
+   MENUITEM IDT_IDMEN_DEFNOTEBOOK,          IDMEN_DEFNOTEBOOK
+   MENUITEM IDT_IDMEN_OKNOTEBOOK,           IDMEN_OKNOTEBOOK
+   MENUSEPARATOR
+   MENUITEM IDT_IDMEN_DEFDIRDLG,            IDMEN_DEFDIRDLG
+   MENUITEM IDT_IDMEN_DEFDIRDLGPRELOAD,     IDMEN_DEFDIRDLGPRELOAD
+   MENUITEM IDT_IDMEN_CUSTDIRDLGPRELOAD,    IDMEN_CUSTDIRDLGPRELOAD
+   MENUITEM IDT_IDMEN_DEFFILEDLG,           IDMEN_DEFFILEDLG
+   MENUITEM IDT_IDMEN_CNRDLG,               IDMEN_CNRDLG
+   MENUSEPARATOR
+
+   MENUITEM IDT_IDMEN_EXIT,          IDMEN_EXIT
+END
+
+MENU IDMEN_INSERT
+BEGIN
+   SUBMENU  IDT_IDMEN_SUBMENU,          IDMEN_SUBMENU
+   BEGIN
+      MENUITEM IDT_IDMEN_ITEM1,         IDMEN_ITEM1
+      MENUITEM IDT_IDMEN_ITEM2,         IDMEN_ITEM2
+      MENUITEM IDT_IDMEN_ITEM3,         IDMEN_ITEM3
+      MENUITEM "#100",                  IDMEN_ITEMBITMAP, MIS_BITMAP
+  END
+END
+

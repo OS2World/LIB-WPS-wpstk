@@ -1,0 +1,63 @@
+
+  settings and details manager WPS sample readme
+  Copyright (c) 2000  WPS Toolkit Project by Christian Langanke
+
+
+file list:
+------------------------
+makefile      - creates the test program
+readme.1st    - you are reading it
+
+settcls.idl   - SOM idl file to describe the WPS class
+settcls.c     - source of WPS class, maintained by the SOM compiler
+settcb.c      - source of settings manager callback
+settdlg.c     - source of the dialog procedure code of the settings notebook
+const.h       - some global constants
+settcb.h      - header of settings manager callback
+settdlg.h     - header of the dialog procedure code of the settings notebook
+settdlg.rch   - resource ids used by the resource script and the callback code
+settdlg.rc    - resource script for the WPS class
+settcls.ico   - icon used by the WPS class
+settdlg.dlg   - dialog templates for the settings notebooks
+                (maintain this with dlgfix.cmd !)
+
+on.cmd        - registers the WPS class and instanciates the test object
+                It is created in a folder, which is opened in details view.
+                PMPRINTF is started automatically in order to display
+                debug information.
+                NOTE:
+                - In order to let the settings manager display debug information,
+                  use this test program, the library (at least wtkset.c) must be
+                  compiled with DEBUG being turned on.
+                - requires the compile directory as first parameter.
+                  Execute "make install" to execute on.cmd properly.
+off.cmd       - destroys the test object and deregisters sample WPS class
+send.cmd      - sends a setup string to the test object
+save.cmd      - lets the WPS save the test object (should invoke WtkQueryObjectSettings)
+
+
+Execute
+------------------------
+make all      - to build the sample WPS class (default)
+make clean    - to delete the files created by the build
+make install  - to (build and) register the WPS class and instanciate the test object
+send ...=...  - to send a settings string to the object.
+                See
+                  settcls.c:MSET_wpclsInitData()
+                  settcb.c:SettingsCallbackProc()
+                in order to learn about valid settings strings.
+save          - to let the WPS save the object. This should
+                invoke WtkQueryObjectSettings
+make deinstall- to destroy the test object and deregister the sample WPS class,
+                this is required before recompile !!!
+
+NOTE:
+(1) It is higly recommended to make a backup of your OS2.INI/OS2SYS.INI files
+before installing and deinstalling this sample several times. It is very much
+depending on your fixpack level, wether the WPS repository residing in these
+files stays stable or not. With certain fixpacks you might experience problems
+after a few or more turnes, wich are mostly solved with a WPS restart, others
+need a restore of the backup of OS2.INI/OS2SYS.INI though. This sample has been
+developed and tested with WARP 4 FP 10 and tested under WARP 3 FP 39 without
+needing a backup, but you NEVER know. Don't say that you have not been warned !!!
+

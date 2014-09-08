@@ -1,0 +1,9 @@
+Structure for the main information of a SYSLEVEL file.
+:note.
+:ul compact.
+:li.This datatype is kept for backwards compatibility only and therefore
+is deprecated, as it was misspelled. Please use
+:link reftype=hd viewport dependent refid=SYSLEVELINFO.SYSLEVELINFO:elink.
+instead!
+:eul.
+:p.

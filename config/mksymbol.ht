@@ -1,0 +1,9 @@
+Symbols:
+  DEBUG         - define this symbol/envvar to turn on debugging (default)
+  NDEBUG        - define this symbol/envvar to turn off debugging
+
+  For IBM C Set/2 only, ignored for all other compilers:
+  CFG_MT=1      - define this symbol to turn on multithread support (default)
+  CFG_ST=1      - define this symbol to turn off multithread support.
+                  This overrides a default value definition of CFG_MT.
+

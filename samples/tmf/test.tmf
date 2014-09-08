@@ -1,0 +1,36 @@
+; ***************************** Module Header ******************************\
+;
+; Module Name: test.tmf
+;
+; sample text message file (TMF)
+;
+; Copyright (c) WPS Toolkit Project - Christian Langanke 2002
+;
+; $Id: test.tmf,v 1.2 2002-11-23 15:36:45 cla Exp $
+;
+; ===========================================================================*
+;
+; This file is part of the WPS Toolkit package and is free software.  You can
+; redistribute it and/or modify it under the terms of the GNU Library General
+; Public License as published by the Free Software Foundation, in version 2
+; as it comes in the "COPYING.LIB" file of the WPS Toolkit main distribution.
+; This library is distributed in the hope that it will be useful, but WITHOUT
+; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+; License for more details.
+;
+;\***************************************************************************/
+
+<--TEST_PARAMETER_LIST-->:%1 %2 %3 %4 %5 %6 %7 %8 %9
+<--TEST_PARAMETER_NOSPACE-->:%1%2%3%4%5%6%7%8%9
+<--TEST_PARAMETER_MULTILINELIST-->:
+Parm1: %1  Parm1: %1  Parm1: %1  Parm1: %1
+Parm2: %2  Parm2: %2  Parm2: %2  Parm2: %2
+Parm3: %3  Parm3: %3  Parm3: %3  Parm3: %3
+Parm4: %4  Parm4: %4  Parm4: %4  Parm4: %4
+Parm5: %5  Parm5: %5  Parm5: %5  Parm5: %5
+Parm6: %6  Parm6: %6  Parm6: %6  Parm6: %6
+Parm7: %7  Parm7: %7  Parm7: %7  Parm7: %7
+Parm8: %8  Parm8: %8  Parm8: %8  Parm8: %8
+Parm9: %9  Parm9: %9  Parm9: %9  Parm9: %9
+

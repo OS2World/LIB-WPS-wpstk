@@ -1,0 +1,30 @@
+/****************************** Module Header ******************************\
+*
+* Module Name: _nlsdeu.rc
+*
+* Resource file for german resource module of NLS functions related sample
+*
+* Copyright (c) WPS Toolkit Project - Christian Langanke 2000
+*
+* $Id: _nlsdeu.rc,v 1.2 2006-08-13 19:50:26 cla Exp $
+*
+* ===========================================================================*
+*
+* This file is part of the WPS Toolkit package and is free software.  You can
+* redistribute it and/or modify it under the terms of the GNU Library General
+* Public License as published by the Free Software Foundation, in version 2
+* as it comes in the "COPYING.LIB" file of the WPS Toolkit main distribution.
+* This library is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+* License for more details.
+*
+\***************************************************************************/
+
+#include "_nls.rch"
+
+STRINGTABLE
+BEGIN
+  IDSTR_LANGUAGE_IDENTIFIER  "UnterstÅtzt wird die deutsche Sprache!"
+END
+

@@ -1,0 +1,603 @@
+# ***************************** Module Header *******************************
+#
+# rules.in - MakeRules - Copyright (c) Christian Langanke 2003-2008
+#
+# You are allowed to modify and use this file wherever desired.
+# If you have ideas and/or comments, please report to: cla@clanganke.de
+#
+# This is a generic include file to setup compiler and linker flags and
+# some specific implicit rules - See description below !
+# It applies only for using:
+#   - nmake
+#   - IBM C Set/2
+#   - IBM Visual Age C++ V3 (may also run with IBM Visual Age C++ V4)
+#   - Open Watcom (v1.5 and better)
+#
+# NOTE:
+# - For usage with GCC and GNU make use GNUrules.in instead !
+# - For support of the Watcom compiler, the REXX script files
+#   wdef2lib.cmd and wdef2lnk.cmd are also required
+#
+# This include file creates a compile and either debug or release directory
+# automatically, where files created by the defined rules are put.
+#
+# --- IMPORTANT --- IMPORTANT --- IMPORTANT --- IMPORTANT --- IMPORTANT ---
+#
+# Create an includefile and place the pathname in PRJINC or name a project
+# specific include file project.in in the same directory like this file
+# in order to make project specific extensions like additional diectories
+# and macro extensions or replacements.
+# DO NOT MODIFY THIS FILE FOR SUCH PURPOSES!
+#
+# Provided rules allow only one EXE or DLL to be linked per makefile
+# in one call. Use a different set of pseudotargets within the calling
+# makefile in order to distinct between the creation of one or more
+# executables or one or more DLLs and let the makefile call itself several
+# times in order to create one executable or DLL with each call.
+#
+# --- IMPORTANT --- IMPORTANT --- IMPORTANT --- IMPORTANT --- IMPORTANT ---
+#
+# ===========================================================================
+#
+# This file sets up rules for
+#   .c.obj    - c in current or srcdir, obj in bindir
+#   .rc.res     rc in current or srcdir, res in cmpdir
+#   .obj.dll  - obj and dll in bindir
+#   .obj.exe  - obj and exe in bindir
+#   .obj.lib  - obj and lib in bindir (either code libs or imp libs)
+#
+# Specify the following values before calling nmake:
+#
+# MANDANTORY:
+# -----------
+#  BASEDIR  -  relative path specification to this file from the calling makefile
+#              (e.g. BASEDIR=..\..)
+#
+# OPTIONAL:
+# ---------
+#  DEBUG    -  compile debug binaries                                  default: non-debug binaries
+#  PRJINC   -  project specific include file                           default: $(BASEDIR)\project.in
+#
+#  C_FLAGS_USER  - additional compiler flags                           default: empty
+#  L_FLAGS_USER  - additional linker flags                             default: empty
+#  SC_FLAGS_USER   - additional SOM compiler flags                     default: empty
+#  RC_FLAGS_USER - additional resource compiler flags                  default: empty
+#
+#  OBJS     -  more objects to be linked (include in dependency list!) default: empty
+#  OBJS1 - 9-  more objects to be linked (include in dependency list!) default: empty
+#  SCPDIR   -  directory where to let the SOM compiler emit files to   default: $(CMPDIR)
+#  APPTYPE  -  define application type (VIO or PM)                     default: empty
+#  DLL      -  compile a DLL                                           default: compile an EXE
+#  LIBS     -  own libs to be linked (include in dependency list !)    default: empty
+#  EXTLIBS  -  external libs (don not include in dependency list!)     default: empty
+#  DEF      -  definition file (include in dependency list !)          default: no def file
+#  RES      -  resource file (include in dependency list !)            default: file with name of exe/dll
+#  DLLEXT   -  use another filename extension instead of .dll          default: use '.dll'
+#  PMPRINTF -  if defined: link $(BINDIR)\printf.obj                   default: undefined
+#
+#  ST       -  override MT env variable, compile for single thread
+#  MT       -  compile with multithread support                        default: single-thread
+#  OPTIMIZE -  define this to have optimized non-debug binaries        default: no otpimization
+#  LXLITE   -  define this to compress non-debug binaries              default: no compression
+#  IMPLIB   -  build import libs                                       default: build code libs
+#
+#  KEEP     - defines that temporary link files are to keep            default: delte tmp files
+#
+# ---------------------------------------------------------------------------
+#
+# The following values are set and used for implicit rules.
+# They can also be used for explicit commands:
+#
+#   CC               - name of the compiler executable
+#   DBG              - name of the debugger executable
+#   SC               - name of the SOM precompiler
+#   LL               - name of the linker executable
+#   CLIB             - name of the code library manager executable
+#   ILIB             - name of the import library manager executable
+#   RC               - name of the resource compiler executable
+#
+#   C_FLAGS          - compiler flags according to the DEBUG setting
+#   SC_FLAGS         - SPM precompiler flags
+#   L_FLAGS          - linker flags according to the DEBUG setting
+#   RC_FLAGS         - resource compiler flags according to the DEBUG setting
+#   PMPRINTF         - PMPrintf object file for DEBUG mode or empty
+#
+#   For makefiles requiring to build DEBUG/RELEASE executables in one run,
+#   you can copy the commands from the implicit rules within this file to
+#   your makefile and replace the *_FLAGS_* macro with one of the following:
+#
+#   C_FLAGS_MAIN     - compiler flags without any debug/release settings
+#   L_FLAGS_MAIN     - linker flags without any debug/release settings
+#   RC_FLAGS_MAIN    - resource compiler flags without any debug/release settings
+#
+#   C_FLAGS_DEBUG    - compiler flags with debug settings
+#   L_FLAGS_DEBUG    - linker flags with debug settings
+#   RC_FLAGS_DEBUG   - resource compiler flags with debug settings
+#
+#   C_FLAGS_RELEASE  - compiler flags with debug settings
+#   L_FLAGS_RELEASE  - linker flags with debug settings
+#   RC_FLAGS_RELEASE - resource compiler flags with debug settings
+#
+#   TO_NUL           - defines the string for complete output redirection to NUL
+#   TO_ERR           - defines the string for stdout redirection to stderr
+#
+#	History:
+#   --------
+#	20130122 AB		changed '!ifdef watcom' to '!if "$(CFG_COMPILER)" == "watcom"' 
+#					remed out TO_NUL
+#                   changed '!ifdef CPPLOCAL' to '!if "$(CFG_COMPILER)" == "vac3"'
+#
+# ***************************************************************************
+
+!ifndef BASEDIR
+!error in rules.in: BASEDIR must be set in your makfile before including this file.
+!endif
+
+# --- helper macros
+TO_NUL= >NUL 2>&1
+TO_ERR= 1>&2
+
+# --- determine dll extension
+!ifndef DLLEXT
+DLLEXT=.dll
+!endif
+
+# --- determine current debug option
+!ifdef NDEBUG
+!undef DEBUG
+!endif
+
+# --- determine DEBUG related options
+!ifdef DEBUG
+!ifdef LXLITE
+!undef LXLITE
+!endif
+!ifdef OPTIMIZE
+!undef OPTIMIZE
+!endif
+!endif
+
+# --- determine default multithreading option
+!ifdef ST
+!undef MT
+!endif
+
+# --- create compile directory depending on debug option
+!ifdef DEBUG
+BINDIR_NAME=debug
+DEBUG_STATUS=active
+!else
+BINDIR_NAME=release
+DEBUG_STATUS=inactive
+!endif
+BINDIR=$(BASEDIR)\$(BINDIR_NAME)
+!if [@md $(BINDIR) 2> NUL]
+!endif
+
+CMPDIR_NAME=compile
+CMPDIR=$(BASEDIR)\$(CMPDIR_NAME)
+!if [@md $(CMPDIR) 2> NUL]
+!endif
+
+# --- determine output directory for files emitted
+#     by the SOM precompiler with SCPDIR, default is CMPDIR
+!ifndef SCPDIR
+SCPDIR=$(CMPDIR)
+!endif
+
+# always include compile directory in include path
+INCLUDE=$(CMPDIR);$(BINDIR);$(INCLUDE);
+
+# --- cleanup list for directories created here for main makefile
+#     This macro should be used in the main makefile of a project only
+#     in order to cleanup temporary directories. Extend this macro in
+#     the file project.in when creating additional directories, that should
+#     also be cleaned up
+DIRSTOCLEAN=$(BINDIR) $(CMPDIR)
+
+# --------------------------------------------------------------------------------
+
+# --- define compiler and toolkit specific options
+
+# common options for all compilers
+RC=rc
+SC=$(SOMBASE)\bin\sc
+SC_FLAGS=-maddstar -S128000 -C128000 -mnoint
+
+# ------------------------------------
+
+!if "$(CFG_COMPILER)" == "watcom"
+# - Open Watcom
+CC=wcc386
+DBG=wdw
+C_FLAGS_BASE=-q -bt=OS2 -zp1 -sg -wx -wcd=202 -fr=
+L_FLAGS_BASE=
+CLIB=wlib
+ILIB=wlib
+LL=wlink
+
+!ifdef DLL
+C_FLAGS_TYPEDLL=-bd
+!endif
+
+C_FLAGS_COMPILER=
+C_FLAGS_COMPILER_DEBUG=-d2
+C_FLAGS_COMPILER_RELEASE=
+L_FLAGS_COMPILER_DEBUG=debug all
+L_FLAGS_COMPILER_RELEASE=
+
+# --- define executable specific options
+EXE_L_FLAGS=
+DLL_L_FLAGS=
+
+# --- Watcom compiler: define optimize option
+!ifdef OPTIMIZE
+C_FLAGS_OPT=-ox
+!else
+C_FLAGS_OPT=
+!endif
+
+# --- Watcom compiler: define threading option
+!ifdef MT
+C_FLAGS_MT=-bm
+!else
+C_FLAGS_MT=
+!endif
+
+# --- Watcom compiler: define application type
+L_FLAGS_APPTYPENAME=OS/2 32-bit
+!if "$(APPTYPE)" == "VIO"
+L_FLAGS_APPTYPE_WC=pmcompatible
+!endif
+!if "$(APPTYPE)" == "PM"
+L_FLAGS_APPTYPE_WC=pm
+L_FLAGS_APPTYPENAME=OS/2 32-bit Presentation Manager
+!endif
+
+
+!else
+
+# ------------------------------------
+
+# common options for IBM compilers
+CC=icc
+C_FLAGS_BASE=-q -c -Ss+ -Sp1
+L_FLAGS_BASE=/A:4 /E /NOI /NOE /NOL /MAP
+!ifdef DLL
+C_FLAGS_TYPEDLL=-Ge-
+!endif
+
+C_FLAGS_COMPILER=
+C_FLAGS_COMPILER_DEBUG=-Tm -Ti+
+C_FLAGS_COMPILER_RELEASE=-Ti-
+!ifndef CFG_COMPILER_36 
+L_FLAGS_COMPILER_DEBUG=/CODEView
+!endif
+L_FLAGS_COMPILER_RELEASE=
+
+# --- define executable specific options
+EXE_L_FLAGS= /BASE:0X10000
+DLL_L_FLAGS= /BASE:0X120000
+
+!if "$(CFG_COMPILER)" == "vac3"
+# - VAC3 -
+DBG=icsdebug
+CLIB=ilib
+ILIB=ilib
+LL=ilink
+C_FLAGS_COMPILER=-W3 -Wcnd-
+!ifdef CFG_COMPILER_36 
+# Todo
+#L_FLAGS_LINKER= /NOFREE wpstk.lib
+L_FLAGS_LINKER= /NOFREE 
+!else
+L_FLAGS_LINKER= /NOFREE
+!endif
+!else
+# - IBM C/Set2 -
+DBG=ipmd
+CLIB=lib
+ILIB=implib
+LL=link386
+C_FLAGS_COMPILER=-W3
+L_FLAGS_LINKER=/BATCH
+!endif
+
+# --- IBM compiler: define optimize option
+!ifdef OPTIMIZE
+C_FL AGS_OPT=-O+ ToDo: repair
+!else
+C_FLAGS_OPT=-O-
+!endif
+
+# --- IBM compiler: define threading option
+!ifdef MT
+C_FLAGS_MT=-Gm+
+!else
+C_FLAGS_MT=-Gm-
+!endif
+
+# --- IBM compiler: define application type
+!ifdef APPTYPE
+L_FLAGS_APPTYPE=/PM:$(APPTYPE)
+!endif
+
+!endif
+
+# --------------------------------------------------------------------------------
+
+# --- check for RC version, this of Toolkit4 supports -n (/nologo)
+RC_FLAGS_LOGO=
+!ifdef RES
+!if [MASM2ALP >NUL 2>&1] != 1041
+RC_FLAGS_LOGO=-n
+!endif
+!endif
+
+# --- concatenate main options (all without DEBUG options)
+C_FLAGS_MAIN=$(C_FLAGS_BASE) $(C_FLAGS_COMPILER) $(C_FLAGS_TYPEDLL) $(C_FLAGS_OPT) $(C_FLAGS_MT) $(C_FLAGS_USER)
+L_FLAGS_MAIN=$(L_FLAGS_LINKER) $(L_FLAGS_BASE) $(L_FLAGS_APPTYPE) $(L_FLAGS_USER)
+RC_FLAGS_MAIN=$(RC_FLAGS_LOGO) $(RC_FLAGS_USER)
+
+# --- define debug options
+C_FLAGS_DEBUG=$(C_FLAGS_MAIN) $(C_FLAGS_COMPILER_DEBUG) -DDEBUG
+L_FLAGS_DEBUG=$(L_FLAGS_MAIN) $(L_FLAGS_COMPILER_DEBUG)
+RC_FLAGS_DEBUG=$(RC_FLAGS_MAIN) -DDEBUG
+
+# --- define release options
+C_FLAGS_RELEASE=$(C_FLAGS_MAIN) $(C_FLAGS_COMPILER_RELEASE) -DNDEBUG
+L_FLAGS_RELEASE=$(L_FLAGS_MAIN) $(L_FLAGS_COMPILER_RELEASE)
+RC_FLAGS_RELEASE=$(RC_FLAGS_MAIN) -DNDEBUG
+
+
+# --- use debug or release options
+!ifdef DEBUG
+C_FLAGS=$(C_FLAGS_DEBUG)
+L_FLAGS=$(L_FLAGS_DEBUG)
+RC_FLAGS=$(RC_FLAGS_DEBUG)
+!ifdef PMPRINTF
+PMPRINTF=$(BINDIR)\printf.obj
+!endif
+!else
+C_FLAGS=$(C_FLAGS_RELEASE)
+L_FLAGS=$(L_FLAGS_RELEASE)
+RC_FLAGS=$(RC_FLAGS_RELEASE)
+PMPRINTF=
+!endif
+
+# --- suffix list
+.SUFFIXES: .exe .obj .c .obj .idl .ih .lib .dll .lst .def .rc .res $(DLLEXT)
+
+# --- let make keep temporary files
+!ifdef KEEP
+KEEP=KEEP
+!endif
+
+# --- if file project.in exists, call this to create additional
+#     project specific directories and extend macros etc.
+
+!ifdef PRJINC
+PROJECTFILE=$(PRJINC)
+!else
+PROJECTFILE=$(BASEDIR)\project.in
+!endif
+!if [@dir $(PROJECTFILE) >NUL 2>&1]
+!else
+!include $(PROJECTFILE)
+!endif
+
+# --- implicit rules
+
+# - SOM precompiler rules
+
+.idl.c:
+    $(SC) $(SC_FLAGS) $(SC_FLAGS_USER) -s "c" $(@B).idl
+    @touch $(@B).c
+
+.idl.ih:
+    $(SC) $(SC_FLAGS) $(SC_FLAGS_USER) -s "ih" $(@B).idl
+
+.idl.h:
+    $(SC) $(SC_FLAGS) $(SC_FLAGS_USER) -s "h" $(@B).idl
+
+.idl.def:
+    $(SC) $(SC_FLAGS) $(SC_FLAGS_USER) -s "def" $(@B).idl
+
+.idl{$(SCPDIR)}.ih:
+    $(SC) $(SC_FLAGS) $(SC_FLAGS_USER) -s "ih" -d $(SCPDIR) $(@B).idl
+
+.idl{$(SCPDIR)}.h:
+    $(SC) $(SC_FLAGS) $(SC_FLAGS_USER) -s "h" -d $(SCPDIR) $(@B).idl
+
+.idl{$(SCPDIR)}.def:
+    $(SC) $(SC_FLAGS) $(SC_FLAGS_USER) -s "def" -d $(SCPDIR) $(@B).idl
+
+# - source to object rules
+
+.c{$(BINDIR)}.obj:
+!if "$(CFG_COMPILER)" == "watcom"
+   $(CC) $(@B).c $(C_FLAGS) -Fo$*.obj
+!else
+   $(CC) $(C_FLAGS) -Fo$*.obj $(@B).c
+!endif
+
+.rc{$(CMPDIR)}.res:
+   $(RC) -r $(RC_FLAGS) $(@B).rc $*.res
+
+.rc{$(BINDIR)}.res:
+   $(RC) -r $(RC_FLAGS) $(@B).rc $*.res
+
+# - object to executable rules
+
+{$(BINDIR)}.obj{$(BINDIR)}$(DLLEXT):
+!if "$(CFG_COMPILER)" == "watcom"
+   @echo @<<link.tmp
+name $*$(DLLEXT)
+option osname='$(L_FLAGS_APPTYPENAME)',quiet,alignment=4,offset=0X120000
+libpath %WATCOM%\lib386
+libpath %WATCOM%\lib386\os2
+format os2 lx dll
+option map=$*.map
+file {$(OBJS) $(OBJS1) $(OBJS2) $(OBJS3) $(OBJS4) $(OBJS5) $(OBJS6) $(OBJS7) $(OBJS8) $(OBJS9) $(PMPRINTF)}
+lib {$(EXTLIBS) $(LIBS)}
+<<$(KEEP)
+   wdef2lnk link.tmp $(DEF)
+   $(LL) $(L_FLAGS) $(DLL_L_FLAGS) @link.tmp
+!else
+   @echo @<<link.tmp
+$(OBJS) $(PMPRINTF) +
+$(OBJS1) +
+$(OBJS2) +
+$(OBJS3) +
+$(OBJS4) +
+$(OBJS5) +
+$(OBJS6) +
+$(OBJS7) +
+$(OBJS8) +
+$(OBJS9)
+$*$(DLLEXT)
+$*.map
+$(EXTLIBS) $(LIBS)
+$(DEF)
+<<$(KEEP)
+   -4 $(LL) $(L_FLAGS) $(DLL_L_FLAGS) @link.tmp
+!endif
+!ifdef RES
+   $(RC) $(RC_FLAGS_LOGO) $(RES) $*$(DLLEXT)
+!endif
+!ifdef LXLITE
+   lxlite $*$(DLLEXT)
+!endif
+
+{$(BINDIR)}.obj{$(BINDIR)}.exe:
+!if "$(CFG_COMPILER)" == "watcom"
+   @echo @<<link.tmp
+name $*.exe
+option osname='$(L_FLAGS_APPTYPENAME)',quiet,alignment=4,offset=0X10000
+libpath %WATCOM%\lib386
+libpath %WATCOM%\lib386\os2
+format os2 lx $(L_FLAGS_APPTYPE_WC)
+option map=$*.map
+file {$(OBJS) $(OBJS1) $(OBJS2) $(OBJS3) $(OBJS4) $(OBJS5) $(OBJS6) $(OBJS7) $(OBJS8) $(OBJS9) $(PMPRINTF)}
+lib {$(EXTLIBS) $(LIBS)}
+<<$(KEEP)
+   wdef2lnk link.tmp $(DEF)
+   $(LL) $(L_FLAGS) $(EXE_L_FLAGS) @link.tmp
+!else
+   @echo @<<link.tmp
+$(OBJS) $(PMPRINTF) +
+$(OBJS1) +
+$(OBJS2) +
+$(OBJS3) +
+$(OBJS4) +
+$(OBJS5) +
+$(OBJS6) +
+$(OBJS7) +
+$(OBJS8) +
+$(OBJS9)
+$*.exe
+$*.map
+$(EXTLIBS) $(LIBS)
+$(DEF)
+<<$(KEEP)
+   -4 $(LL) $(L_FLAGS) $(EXE_L_FLAGS) @link.tmp
+!endif
+!ifdef RES
+   $(RC) $(RC_FLAGS_LOGO) $(RES) $*.exe
+!endif
+!ifdef LXLITE
+   lxlite $*.exe
+!endif
+
+# - library creation and listing rules
+
+!if "$(CFG_COMPILER)" == "watcom"
+
+!ifdef IMPLIB
+
+# --- Watcom compiler: import library from DLL
+
+{$(BINDIR)}.dll{$(BINDIR)}.lib:
+    $(ILIB) -q -b $*.lib +$*.dll
+
+# --- Watcom compiler: import library from DEF file
+
+{$(BINDIR)}.def{$(BINDIR)}.lib:
+    wdef2lib $*.lib $*.def
+
+!else
+
+# --- Watcom compiler: code library
+
+{$(BINDIR)}.obj{$(BINDIR)}.lib:
+    !$(CLIB) -q -b $@ -+$?
+!endif
+
+# --- Watcom compiler: library list file
+
+{$(BINDIR)}.lib{$(BINDIR)}.lst:
+   $(CLIB) $*.lib  > $*.lst
+
+!else
+
+!ifdef IMPLIB
+
+# --- IBM compiler: import library from DLL
+
+{$(BINDIR)}.dll{$(BINDIR)}.lib:
+!if "$(CFG_COMPILER)" == "vac3"
+!ifdef CFG_COMPILER_36
+    ilib /NOFR /NOLOGO $*.lib $*.dll
+#    ilib /NOFR /NOLOGO /NOE /NOBAckup /NOBRowse $*.lib
+!else
+    implib /NOLOGO $*.lib $*.dll
+    ilib /NOLOGO /CONV /NOE /NOBR /NOB $*.lib;
+!endif
+!endif
+
+# --- IBM compiler: import library from DEF file
+
+{$(BINDIR)}.def{$(BINDIR)}.lib:
+!if "$(CFG_COMPILER)" == "vac3"
+!ifdef CFG_COMPILER_36
+    @echo lib import from DEF
+#    ilib /NOLOGO /LIST:$*.lst $*.lib $*.def 
+#    ilib /NOFR /NOLOGO /NOE /NOBAckup /NOBRowse $*.lib
+!else
+    implib /NOLOGO $*.lib $*.def
+    ilib /NOLOGO /CONV /NOE /NOBR /NOB $*.lib;
+!endif
+!endif
+
+!else
+
+# --- IBM compiler: code library
+
+{$(BINDIR)}.obj{$(BINDIR)}.lib:
+!ifdef CFG_COMPILER_36
+    @echo lib code library
+    $(CLIB) /NOLOGO /LIST:$@ /OUT:$@ $<
+#    !$(CLIB) /NOLOGO /OUT:$@ $?
+    !$(CLIB) /NOLOGO /OUT:$@ $@ $? 
+#    !$(CLIB) /NOFR /NOLOGO $@ -+$?;
+
+!else
+    !$(CLIB) /NOLOGO $@ -+$?;
+!endif
+    @if exist $*.bak del $*.bak
+
+!endif
+
+# --- IBM compiler: library list file
+
+{$(BINDIR)}.lib{$(BINDIR)}.lst:
+!ifdef CFG_COMPILER_36
+    @echo lib list file
+#	$(CLIB) /NOLOGO /LIST:$*.lst $*.lib
+#	$(CLIB) /NOFR /NOLOGO $*,$*.lst;
+!else
+	$(CLIB) /NOLOGO $*,$*.lst;
+!endif
+
+!endif
+

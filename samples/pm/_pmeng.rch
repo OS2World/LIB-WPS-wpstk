@@ -1,0 +1,73 @@
+/****************************** Module Header *******************************
+*
+* Module Name: _pmeng.rch
+*
+* PM helper functions sample
+*
+* Copyright (c) WPS Toolkit Project - Christian Langanke 2004
+*
+* $Id: _pmeng.rch,v 1.12 2008-12-22 18:47:02 cla Exp $
+*
+****************************************************************************/
+
+#ifndef _PMENG_RCH
+#define _PMENG_RCH
+
+// strings for pushbuttons
+#define IDT_IDPBS_OK            "~Ok"
+#define IDT_IDPBS_CANCEL        "~Cancel"
+#define IDT_IDPBS_UNDO          "~Undo"
+#define IDT_IDPBS_DEFAULT       "~Default"
+#define IDT_IDPBS_HELP          "~Help"
+#define IDT_IDPBS_ADD           "~Add"
+#define IDT_IDPBS_REMOVE        "~Remove"
+
+// strings for menus
+
+#define IDT_IDMEN_DEFNOTEBOOK          "Launch ~Notebook Dialog 1... (undo/default/help)"
+#define IDT_IDMEN_OKNOTEBOOK           "Launch ~Notebook Dialog 2... (ok/cancel/undo/default/help)"
+#define IDT_IDMEN_DEFDIRDLG            "Launch Directory Dialog... (default layout)"
+#define IDT_IDMEN_DEFDIRDLGPRELOAD     "Launch Directory Dialog... (default layout, preload)"
+#define IDT_IDMEN_CUSTDIRDLGPRELOAD    "Launch Directory Dialog... (custom layout, preload)"
+#define IDT_IDMEN_DEFFILEDLG           "Launch System File Dialog..."
+#define IDT_IDMEN_CNRDLG               "Launch Container Dialog..."
+#define IDT_IDMEN_EXIT                 "~Exit"
+
+#define IDT_IDMEN_SUBMENU      "Submenu inserted with WtkInsertMenu"
+#define IDT_IDMEN_ITEM1        "Inserted menu item 1..."
+#define IDT_IDMEN_ITEM2        "Inserted menu item 2..."
+#define IDT_IDMEN_ITEM3        "Inserted menu item 3..."
+
+// strings
+
+#define IDT_IDSTR_PAGESTATUS        "Page %u of %u"
+
+// strings for smaple notebook
+
+#define IDT_IDDLG_DEFNOTEBOOK       "Sample Notebook Dialog 1"
+#define IDT_IDDLG_OKNOTEBOOK        "Sample Notebook Dialog 2"
+
+#define IDT_IDDLG_NOTEBOOK_PAGE1    "Page 1"
+#define IDT_IDGRP_PAGE1             "Properties Page 1"
+
+#define IDT_IDDLG_NOTEBOOK_PAGE2    "Page 2"
+#define IDT_IDGRP_PAGE2             "Properties Page 2"
+#define IDT_IDGRP_PAGE21            "Minor Page 1 for Page 2"
+#define IDT_IDGRP_PAGE22            "Minor Page 2 for Page 2"
+
+#define IDT_IDDLG_NOTEBOOK_PAGE3    "Page 3"
+#define IDT_IDGRP_PAGE3             "Properties Page 3"
+
+#define IDT_IDDLG_NOTEBOOK_PAGE4    "Page 4"
+#define IDT_IDGRP_PAGE4             "Properties Page 4"
+#define IDT_IDTXT_LOADBITMAPS       "This dialog demoes loading several bitmaps from one file"
+
+#define IDT_IDCHB_ENABLEOK          "enable ok button"
+
+#define IDT_IDTXT_CLICKTAB          "Click the tab of this page repeatedly to cycle thought all subpages of page 2!"
+
+#define IDT_IDDLG_CNRSAMPLE         "Container Sample"
+#define IDT_IDTXT_CNRSAMPLE         "Sample Container"
+
+#endif // _PMENG_RCH
+

@@ -1,0 +1,16 @@
+make pseudotargets of main (GNU)makefile:
+
+   make               - displays the main help text
+   make targets       - displays this help text
+   make symbols       - dsiplays configuration symbols
+
+   make all           - builds library, docs and samples
+   make dev           - builds library and docs (developer build)
+     make lib|libs    - builds library
+     make doc|docs    - builds docs
+     make view        - builds wpstk.inf and views it instantly
+     make sam|samples - builds samples
+       make vio       - builds vio samples
+       make wps       - builds wps samples
+   make run           - runs all vio samples (builds lib & sample if required)
+   make clean         - cleans up all target directories with compiled files

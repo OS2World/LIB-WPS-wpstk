@@ -1,0 +1,6 @@
+To pass arguments to sublevel makefiles, specify them with ARG last parameter
+Example: ARG="all NDEBUG=1"
+
+Edit the file config/GNUconfg.in for setup of the default values for the
+symbols below.
+

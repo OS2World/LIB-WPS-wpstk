@@ -1,0 +1,159 @@
+/****************************** Module Header *******************************
+*
+* Module Name: _pm.rch
+*
+* PM helper functions sample
+*
+* Copyright (c) WPS Toolkit Project - Christian Langanke 2004
+*
+* $Id: _pm.rch,v 1.16 2008-12-22 18:47:01 cla Exp $
+*
+****************************************************************************/
+
+#ifndef _PM_RCH
+#define _PM_RCH
+
+// define general values
+#define IDDLG_UNUSED                   -1
+
+// definitions for text resources
+
+#define RT_USER_DATAFILE               0x1000
+#define IDRES_MLETEXT                  0x1000
+
+#define __APPFONT__ "9.WarpSans"
+
+// define help panel IDs
+
+#define IDPNL_MAINWINDOW                1
+
+#define IDPNL_NOTEBOOKPAGE1            10
+#define IDPNL_NOTEBOOKPAGE2            11
+#define IDPNL_NOTEBOOKPAGE21           12
+#define IDPNL_NOTEBOOKPAGE22           13
+#define IDPNL_NOTEBOOKPAGE3            14
+#define IDPNL_NOTEBOOKPAGE4            15
+
+#define IDPNL_DEFDIRDLG                20
+#define IDPNL_DEFDIRDLGPRELOAD         21
+#define IDPNL_CUSTDIRDLGPRELOAD        22
+#define IDPNL_DEFFILEDLG               23
+
+#define IDPNL_RESULTDIRDLG             30
+#define IDPNL_RESULTFILEDLG            31
+
+#define IDPNL_RESULT_ITEM1             40
+#define IDPNL_RESULT_ITEM2             41
+#define IDPNL_RESULT_ITEM3             42
+#define IDPNL_RESULT_ITEMBITMAP        43
+
+#define IDPNL_ITEM_DEFNOTEBOOK         50
+#define IDPNL_ITEM_OKNOTEBOOK          51
+#define IDPNL_ITEM_DEFDIRDLG           52
+#define IDPNL_ITEM_DEFDIRDLGPRELOAD    53
+#define IDPNL_ITEM_CUSTDIRDLGPRELOAD   54
+#define IDPNL_ITEM_DEFFILEDLG          55
+
+#define IDPNL_ITEM1                    60
+#define IDPNL_ITEM2                    61
+#define IDPNL_ITEM3                    62
+#define IDPNL_ITEMBITMAP               63
+
+#define IDPNL_ITEM_EXIT                90
+
+
+
+// define bitmap resource IDs
+
+#define IDBMP_MENUITEM                    100
+
+// define pushbuttons
+
+#define IDPBS_OK                       0x00F0
+#define IDPBS_CANCEL                   0x00F1
+#define IDPBS_UNDO                     0x00F2
+#define IDPBS_DEFAULT                  0x00F3
+#define IDPBS_HELP                     0x00F4
+#define IDPBS_ADD                      0x00F5
+#define IDPBS_REMOVE                   0x00F6
+
+// define menu item resource IDs
+
+#define IDMEN_POPUP                    0x2000
+#define IDMEN_DEFNOTEBOOK              0x2001
+#define IDMEN_OKNOTEBOOK               0x2002
+#define IDMEN_DEFDIRDLG                0x2004
+#define IDMEN_DEFDIRDLGPRELOAD         0x2003
+#define IDMEN_CUSTDIRDLGPRELOAD        0x2005
+#define IDMEN_DEFFILEDLG               0x2006
+#define IDMEN_CNRDLG                   0x2007
+#define IDMEN_EXIT                     0x2008
+
+#define IDMEN_INSERT                   0x2100
+#define IDMEN_SUBMENU                  0x2101
+#define IDMEN_ITEM1                    0x2102
+#define IDMEN_ITEM2                    0x2103
+#define IDMEN_ITEM3                    0x2104
+#define IDMEN_ITEMBITMAP               0x2105
+
+
+// define strings
+
+#define IDSTR_PAGESTATUS               0x3000
+
+// define ID of main window
+#define IDDLG_MAIN                     0x3FFF
+
+// define notebook dialog resource IDs
+
+#define IDDLG_DEFNOTEBOOK              0x4000
+#define IDNBK_NOTEBOOK                 0x4001
+
+#define IDDLG_DEFNOTEBOOK_PAGE1        0x4100
+#define IDGRP_PAGE1                    0x4101
+
+#define IDDLG_DEFNOTEBOOK_PAGE2        0x4200
+#define IDGRP_PAGE2                    0x4201
+
+#define IDDLG_DEFNOTEBOOK_PAGE21       0x4300
+#define IDGRP_PAGE21                   0x4301
+
+#define IDDLG_DEFNOTEBOOK_PAGE22       0x4400
+#define IDGRP_PAGE22                   0x4401
+
+#define IDDLG_DEFNOTEBOOK_PAGE3        0x4500
+#define IDGRP_PAGE3                    0x4501
+
+#define IDDLG_DEFNOTEBOOK_PAGE4        0x4600
+#define IDGRP_PAGE4                    0x4601
+
+#define IDDLG_OKNOTEBOOK               0x9000
+#define IDCHB_ENABLEOK                 0x9001
+
+#define IDTXT_CLICKTAB                 0x9100
+
+#define IDTXT_LOADBITMAPS              0x9200
+#define IDSTC_BITMAP16                 0x9201
+#define IDSTC_BITMAP32                 0x9202
+#define IDSTC_BITMAP64                 0x9203
+
+#define IDDLG_OKNOTEBOOK_PAGE1         0xA100
+#define IDDLG_OKNOTEBOOK_PAGE2         0xA200
+#define IDDLG_OKNOTEBOOK_PAGE21        0xA300
+#define IDDLG_OKNOTEBOOK_PAGE22        0xA400
+#define IDDLG_OKNOTEBOOK_PAGE3         0xA500
+#define IDDLG_OKNOTEBOOK_PAGE4         0xA600
+
+#define IDDLG_DEFDIRDLG                0xB101
+#define IDDLG_DEFDIRDLGPRELOAD         0xB102
+#define IDDLG_CUSTDIRDLGPRELOAD        0xB103
+
+// define result message box resource identifiers
+#define IDDLG_MSGBOX_RESULTDIRDLG      0xB200
+#define IDDLG_MSGBOX_RESULTFILEDLG     0xB200
+
+#define IDDLG_CNRSAMPLE                0xB300
+#define IDCNR_CNRSAMPLE                0xB301
+
+#endif // _PM_RCH
+

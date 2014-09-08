@@ -1,0 +1,22 @@
+PM helper functions sample readme
+Copyright (c) 2004  WPS Toolkit Project
+
+This sample demoes the function of several APIs, like
+
+      WtkNotebookDlg to launch a notebook from dialogs completely read fom dialog templates, providing callback functions for actions like initialization and control of GUI controls and retrieving and restoring values from and to GUI controls and supporting autonumbering of subpages (see page 2 and its subpage of the notebook samples).
+
+      WtkDirDlg to launch a dialog for to select a directory, similar to WinFileDlg
+
+      WtkInsertMenu to include a menu loaded from a menu template into an existing one (this is especially helpful when coding extensions for contect menus of XCenter widgets)
+
+      WtkCreateHelpInstance/WtkDestroyHelpInstance to create/destroy a help instance for a given help file, associated to the specified window and WtkDisplayHelpPanel to display a panel from that help file
+
+      Wtk.*BubbleHelp to activate a bubble help window while the mouse pointer is over this window.
+
+      WtkEnableNotebookButton and WtkQueryNotebookButton in notebook sample 2 to enable and disable the ok notebook button
+
+      WtkLoadBitmapFromFile to load specific bitmaps from a file containing multiple bitmaps, where unlike wih GpiLoadBitmap a size can be enforced and scaling be avoided (see fourth page of the notebook samples).
+
+  Press mouse button 2 to bring up a context menu.
+  Press F1 to activate the demo help file.
+

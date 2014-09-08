@@ -1,0 +1,6 @@
+Structure for the main information of a SYSLEVEL file.
+:note.
+:ul compact.
+:li.The fields for version numbers contain values in hexadecimal format!
+:eul.
+:p.

@@ -1,0 +1,299 @@
+# project specific extensions to rules.in
+#
+# Copyright (c) WPS Toolkit Project - Christian Langanke 2002
+#
+# $Id: project.in,v 1.12 2006-12-07 21:36:09 cla Exp $
+#
+# ===========================================================================
+#
+# This file is part of the WPS Toolkit package and is free software.  You can
+# redistribute it and/or modify it under the terms of the GNU Library General
+# Public License as published by the Free Software Foundation, in version 2
+# as it comes in the "COPYING.LIB" file of the WPS Toolkit main distribution.
+# This library is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+# License for more details.
+
+
+# --- check for required base macros
+
+!ifndef CMPDIR
+!error in project.in: CMPDIR must be set in your makfile before including this file.
+!endif
+
+!ifndef BINDIR
+!error in project.in: BINDIR must be set in your makfile before including this file.
+!endif
+
+# ------------------------------------------------------------------------------
+# include configuration settings
+# ------------------------------------------------------------------------------
+
+!include $(BASEDIR)\config\config.in
+
+# ------------------------------------------------------------------------------
+# start/end message definitions
+# ------------------------------------------------------------------------------
+
+STARTMSG=***** $(DESCRIPTION) starts $(TO_ERR)
+ENDMSG=***** $(DESCRIPTION) ends $(TO_ERR)
+
+# ------------------------------------------------------------------------------
+# static directory section
+# ------------------------------------------------------------------------------
+
+
+# some VARS
+CFG_TITLEFILE=$(BASEDIR)\config\mktitle.ht
+CFG_HELPMAIN=$(BASEDIR)\config\mkhelp.ht
+CFG_HELPTARGETS=$(BASEDIR)\config\mktarget.ht
+CFG_HELPSYMBOL1=$(BASEDIR)\config\mknmake.ht
+CFG_HELPSYMBOL2=$(BASEDIR)\config\mksymbol.ht
+
+# ------------------------------------------------------------------------------
+# check environment and display section
+# ------------------------------------------------------------------------------
+
+# show title and determine COMPILER and WARP TOOLKIT VERSION
+# ----------------------------------------------------------
+#
+# generate the component strings only for top level makefile !
+# - write configure.in to compile dir !
+ 
+CFG_MAKETYPE=NMAKE
+CFG_FILE=$(BASEDIR)\compile\config.tmp
+!ifndef MAKELEVEL
+!if [type $(CFG_TITLEFILE) $(TO_ERR)]
+!endif
+!if [$(BASEDIR)\config\config.cmd $(CFG_MAKETYPE) $(CFG_FILE) $(CFG_REQ_PROGRAMS)]
+!endif
+!endif
+
+# load component strings
+# ----------------------
+#
+# check if all is ok
+
+!include $(CFG_FILE)
+!if "$(CFG_RC)" != "0"
+!error : please correct above error.
+!endif
+
+# CHECK COMPILER
+# --------------
+
+!if "$(CFG_COMPILER)" == "cset2"
+COMPILER_CHOSEN=1
+!endif
+
+!if "$(CFG_COMPILER)" == "vac3"
+COMPILER_CHOSEN=1
+!endif
+
+!if "$(CFG_COMPILER)" == "watcom"
+COMPILER_CHOSEN=1
+!endif
+
+!if "$(COMPILER_CHOSEN)" == ""
+!error project.in: your compiler could not be determined. Supported are:  cset vac3 watcom. Terminating.
+!endif
+
+# CHECK TOOLKIT
+# -------------
+
+!if "$(CFG_WARPTK)" == "V3"
+TOOLKIT_CHOSEN=1
+!endif
+
+!if "$(CFG_WARPTK)" == "V4"
+TOOLKIT_CHOSEN=1
+!endif
+
+!if "$(TOOLKIT_CHOSEN)" == ""
+!error in project.in: the version of the WARP toolkit could not be determined. Terminating.
+!endif
+
+# NAME suffix
+# -----------
+#
+# used only for C Set/2, as for this compiler single- and multithreaded
+# code cannot be mixed
+#
+# library/subdirectory name suffix according to
+# single/multithreading
+
+!if "$(CFG_COMPILER)" == "cset2"
+!ifdef MT
+CFG_SUFFIX=m
+!else
+CFG_SUFFIX=s
+!endif
+!else
+CFG_SUFFIX=
+!endif
+
+# ------------------------------------------------------------------------------
+# display section
+# ------------------------------------------------------------------------------
+
+# DISPLAY selections
+# ------------------
+
+!ifdef DEBUG
+DEBUG_STATUS=active
+!else
+DEBUG_STATUS=not active
+!endif
+
+!if "$(CFG_COMPILER)" == "cset2"
+!ifdef CFG_MT
+MT_STATUS= mode: multi threaded,
+!else
+MT_STATUS= mode: single threaded,
+!endif
+!else
+MT_STATUS=
+!endif
+
+!ifdef CFG_COMPILER_36
+VAC_VERSION=.65
+!else
+VAC_VERSION=.08
+!endif
+
+!ifndef MAKELEVEL
+!if [ (echo compiler: $(CFG_COMPILER)$(VAC_VERSION),$(MT_STATUS) WARP Toolkit: $(CFG_WARPTK), debug: $(DEBUG_STATUS) & echo. ) $(TO_ERR)]
+!endif
+!endif
+
+# ------------------------------------------------------------------------------
+# define/create project specific directories
+# ------------------------------------------------------------------------------
+
+# extend binary directory
+# ------------------------
+#
+# compiler specific subdirectory
+
+BINDIR=$(BASEDIR)\$(BINDIR_NAME)\$(CFG_COMPILER)$(CFG_SUFFIX)
+!if [@md $(BINDIR) 2> NUL]
+!endif
+
+# define more target directories
+# ------------------------------
+#
+# add own bin and compile directory to PATH for make purposes
+
+BOOKDIR=$(BASEDIR)\book
+!if [@md $(BOOKDIR) 2> NUL]
+!endif
+
+NDXDIR=$(BASEDIR)\book\epm
+!if [@md $(NDXDIR) 2> NUL]
+!endif
+
+# define BIN directory
+# --------------------
+#
+# add own bin and compile directory to PATH for make purposes
+
+EXECDIR=$(BASEDIR)\bin
+
+# define INCLUDE directory
+# ------------------------
+#
+# Define $(INCDIR) and add it to the INCLUDE path, so that dependencies are
+# extended and all headers can be included properly.
+# $(CMPDIR) is added to our include path in rules.in
+# this is required, because the .h and .ih files of the test WPS classes
+# are also written there !
+
+INCDIR=$(BASEDIR)\include
+
+# define SOURCE directory
+# -----------------------
+#
+# This macros is used for the generation of the online help
+# and debugger calls and contains the base path of the
+# library source
+
+LIBSRCDIR=$(BASEDIR)\source\lib
+
+# define list of TARGET DIRECTORIES
+# ---------------------------------
+
+DIRSTOCLEAN=$(DIRSTOCLEAN) $(NDXDIR) $(BOOKDIR)
+
+# extensions to existing environment variables
+# not for main makefile
+# --------------------------------------------
+
+!ifndef CFG_MAIN
+LIB=$(CMPDIR);$(BINDIR);$(LIB)
+PATH=$(CMPDIR);$(BASEDIR)\config;$(EXECDIR);$(PATH)
+INCLUDE=$(INCDIR);$(CMPDIR);$(SCPDIR);$(INCLUDE)
+!endif
+
+
+# ##############################################################################
+# TODO: degbugger and IPF settings
+# ##############################################################################
+
+# DEBUGGER FLAGS
+# --------------
+#
+# extend debugger path
+
+DBG_SETUP=SET PMDPATH=$(LIBSRCDIR)
+
+# IPF COMPILER flags
+# ------------------
+#
+# Determine the compiler and the filter macro
+
+IPFCX=ipfc
+!ifdef CFG_ERROR_FILTER
+IPFC_FILTER= | ipfcfilt
+!endif
+
+# ----------------------------------------------------------------------------------
+# deactivate PMPRINTF linkage in binary release
+# ----------------------------------------------------------------------------------
+
+!if "$(CFG_TREE)" == "REL"
+PMPRINTF=
+!endif
+
+# ----------------------------------------------------------------------------------
+# static WPS toolkit section
+# ----------------------------------------------------------------------------------
+
+# determine library directory
+#   binary release: directory lib + subdirectory for versions
+# development tree: directory debug or release - equals BINDIR
+# ------------------------------------------------------------
+
+LIBDIR=$(BASEDIR)\lib
+!if "$(CFG_TREE)" == "REL"
+LIBDIR=$(BASEDIR)\lib\$(CFG_COMPILER)$(CFG_SUFFIX)
+!else
+LIBDIR=$(BINDIR)
+!endif
+
+
+# name of the LIBRARY and LIST file
+# ---------------------------------
+
+WTK_LIBRARY_NAME=wpstk
+WTK_LIBRARY=$(LIBDIR)\$(WTK_LIBRARY_NAME).lib
+WTK_LISTFILE=$(LIBDIR)\$(WTK_LIBRARY_NAME)\.lst
+WTK_IMPLIBRARY_NAME=wpstki
+WTK_IMPLIBRARY=$(LIBDIR)\$(WTK_IMPLIBRARY_NAME).lib
+DEBUG_STEM=
+!ifdef DEBUG
+DEBUG_STEM=_debug
+!endif
+WTK_RELEASE_FILE=$(BASEBINDIR)\$(WTK_LIBRARY_NAME)$(CFG_VERSION)$(DEBUG_STEM).zip
+
+

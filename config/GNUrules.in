@@ -1,0 +1,444 @@
+# ***************************** Module Header *******************************
+#
+# (GNU)rules.in - MakeRules - Copyright (c) Christian Langanke 2006-2008
+#
+# You are allowed to modify and use this file wherever desired.
+# If you have ideas and/or comments, please report to: cla@clanganke.de
+#
+# This is a generic include file to setup compiler and linker flags and
+# some specific implicit rules - See description below !
+# It applies only for using:
+#   - GNU make
+#   - gcc of emx V0.9d
+#   - gcc of Innotek
+#
+# NOTE: The makefiles using this include file will use .obj files
+#       instead of .o files and use. Refer to link method E2 /E3
+#       within the emx Application Developer's Guide (emxdev.inf)
+#
+# NOTE: when using gcc v3 of Innotek for building SOM/WPS classes
+#       emiting a module definition file, the program file sed.exe
+#       is required to be available in a directory of the PATH statement.
+#
+# For usage with IBM compilers and NMAKE use rules.in instead !
+#
+# This include file creates a compile and either debug or release directory
+# automatically, where files created by the defined rules are put.
+#
+# --- IMPORTANT --- IMPORTANT --- IMPORTANT --- IMPORTANT --- IMPORTANT ---
+#
+# Create an includefile and place the pathname in PRJINC or name a project
+# specific include file (GNU)project.in in the same directory like this file
+# in order to make project specific extensions like additional diectories
+# and macro extensions or replacements.
+# DO NOT MODIFY THIS FILE FOR SUCH PURPOSES!
+#
+# Provided rules allow only one EXE or DLL to be linked per makefile
+# in one call. Use a different set of pseudotargets within the calling
+# makefile in order to distinct between the creation of one or more
+# executables or one or more DLLs and let the makefile call itself several
+# times in order to create one executable or DLL with each call.
+#
+# --- IMPORTANT --- IMPORTANT --- IMPORTANT --- IMPORTANT --- IMPORTANT ---
+#
+# ===========================================================================
+#
+# This file sets up rules for
+#   .c.obj    - c in current or srcdir, obj in bindir
+#   .rc.res     rc in current or srcdir, res in cmpdir
+#   .obj.dll  - obj and dll in bindir
+#   .obj.exe  - obj and exe in bindir
+#   .obj.lib  - obj and lib in bindir (either code libs or imp libs)
+#
+# Specify the following values before calling nmake:
+#
+# MANDANTORY:
+# -----------
+#  BASEDIR  -  relative path specification to this file from the calling makefile
+#              (e.g. BASEDIR=../..)
+#
+# OPTIONAL:
+# ---------
+#  DEBUG    -  compile debug binaries                                  default: non-debug binaries
+#  PRJINC   -  project specific include file                           default: $(BASEDIR)\(GNU)project.in
+#
+#  C_FLAGS_USER    - additional compiler flags                         default: empty
+#  L_FLAGS_USER    - additional linker flags                           default: empty
+#  RC_FLAGS_USER   - additional resource compiler flags                default: empty
+#  SC_FLAGS_USER   - additional SOM compiler flags                     default: empty
+#  CLIB_FLAGS_USER - additional emxomfar flags                         default: empty
+#
+#  OBJS     -  more objects to be linked (include in dependency list!) default: empty
+#  OBJS1 - 9-  more objects to be linked (include in dependency list!) default: empty
+#  OBJDIR   -  subdirectory below BINDIR for obj files of this         default: empty
+#              makefile. Required if source files with same name are
+#              used within several modules
+#  SCPDIR   -  directory where to let the SOM compiler emit files to   default: $(CMPDIR)
+#  RESDIR   -  directory where to let the Resource compiler write to   default: $(CMPDIR)
+#  APPTYPE  -  define application type (VIO or PM)                     default: empty
+#  DLL      -  compile a DLL                                           default: compile an EXE
+#  LIBS     -  own libs to be linked (include in dependency list !)    default: empty
+#  EXTLIBS  -  external libs (don not include in dependency list!)     default: empty
+#  DEF      -  definition file (include in dependency list !)          default: no def file
+#  RES      -  resource file (include in dependency list !)            default: file with name of exe/dll
+#  DLLEXT   -  use another filename extension instead of .dll          default: use '.dll'
+#  PMPRINTF -  if defined: link $(BINDIR)\printf.obj                   default: undefined
+#
+#  ST       -  override MT env variable, compile for single thread
+#  MT       -  compile with multithread support                        default: single-thread
+#  LXLITE   -  define this to compress non-debug binaries              default: no compression
+#  IMPLIB   -  build import libs                                       default: build code libs
+#  SOMDEF   -  set C symbols for proper SOM linkage for Innotek GCC    default: empty
+#
+# ---------------------------------------------------------------------------
+#
+# The following values are set and used for implicit rules.
+# They can also be used for explicit commands:
+#
+#   CC               - name of the compiler executable
+#   DBG              - name of the debugger executable
+#   SC               - name of the SOM precompiler
+#   LL               - name of the linker executable
+#   CLIB             - name of the code library manager executable
+#   ILIB             - name of the import library manager executable
+#   RC               - name of the resource compiler executable
+#
+#   C_FLAGS          - compiler flags according to the DEBUG setting
+#   SC_FLAGS         - SPM precompiler flags
+#   L_FLAGS          - linker flags according to the DEBUG setting
+#   RC_FLAGS         - resource compiler flags according to the DEBUG setting
+#   PMPRINTF         - PMPrintf object file for DEBUG mode or empty
+#
+#   For makefiles requiring to build DEBUG/RELEASE executables in one run,
+#   you can copy the commands from the implicit rules within this file to
+#   your makefile and replace the *_FLAGS_* macro with one of the following:
+#
+#   C_FLAGS_MAIN     - compiler flags without any debug/release settings
+#   L_FLAGS_MAIN     - linker flags without any debug/release settings
+#   RC_FLAGS_MAIN    - resource compiler flags without any debug/release settings
+#
+#   C_FLAGS_DEBUG    - compiler flags with debug settings
+#   L_FLAGS_DEBUG    - linker flags with debug settings
+#   RC_FLAGS_DEBUG   - resource compiler flags with debug settings
+#
+#   C_FLAGS_RELEASE  - compiler flags with debug settings
+#   L_FLAGS_RELEASE  - linker flags with debug settings
+#   RC_FLAGS_RELEASE - resource compiler flags with debug settings
+#
+#   TO_NUL           - defines the string for complete output redirection to NUL
+#   TO_ERR           - defines the string for stdout redirection to stderr
+#
+# ***************************************************************************
+
+ERROR_TEXT=error in (GNU)rules.in: BASEDIR must be set in your makfile before including this file.
+ifndef BASEDIR
+$(error $(ERROR_TEXT))
+$(shell cmd /c "echo $(ERROR_TEXT)" 1>&2)
+	error
+endif
+BASEDIR_BS=$(subst /,\,$(BASEDIR))
+
+# --- helper macros
+TO_NUL= >NUL 2>&1
+TO_ERR= 1>&2
+
+# --- check for EMX compiler (gcc version 2.x)
+ifneq ($(findstring -2., -$(shell gcc --version)), )
+COMPILER_IS_EMX=1
+else
+COMPILER_IS_GCC=1
+ifdef SOMDEF
+C_FLAGS_USER:=$(C_FLAGS_USER) -DSOMLINK=_System -DUSE_OS2_TOOLKIT_HEADERS
+endif
+endif
+
+# --- don't print directories on recursive calls
+MAKE:=$(MAKE) --no-print-directory
+
+# --- determine dll extension
+ifndef DLLEXT
+DLLEXT=.dll
+endif
+
+# --- determine current debug option
+ifdef NDEBUG
+DEBUG=
+endif
+
+# --- determine DEBUG related options
+ifdef DEBUG
+LXLITE=
+endif
+
+# --- create compile and binary directories depending on debug option
+ifdef DEBUG
+BINDIR_NAME=debug
+DEBUG_STATUS=active
+else
+BINDIR_NAME=release
+DEBUG_STATUS=inactive
+endif
+BINDIR=$(BASEDIR)/$(BINDIR_NAME)
+BINDIR_BS=$(subst /,\,$(BINDIR))
+$(shell cmd /c "( @md $(BINDIR_BS) 2> NUL)" 1>&2)
+
+CMPDIR_NAME=compile
+CMPDIR=$(BASEDIR)/$(CMPDIR_NAME)
+CMPDIR_BS=$(subst /,\,$(CMPDIR))
+$(shell cmd /c "( @md $(CMPDIR_BS) 2> NUL)" 1>&2)
+
+# --- determine output directory for files emitted
+#     by the SOM precompiler with SCPDIR, default is CMPDIR
+
+ifndef SCPDIR
+SCPDIR=$(CMPDIR)
+else
+ifndef _DEFDIR
+_DEFDIR=$(SCPDIR)
+endif
+endif
+SCPDIR_BS=$(subst /,\,$(SCPDIR))
+
+# --- determine unix-style pathname of def file
+ifdef _DEFDIR
+DEFPATHNAME=$(_DEFDIR)/$(DEF)
+else
+DEFPATHNAME=$(DEF)
+endif
+
+# --- determine output directory for files written by
+#     the resource compiler with RESDIR, default is CMPDIR
+ifndef RESDIR
+RESDIR=$(CMPDIR)
+endif
+RESDIR_BS=$(subst /,\,$(RESDIR))
+
+# --- create subdirectory for obj files below BINDIR
+#     if requested
+ifdef OBJDIR
+OBJDIR:=$(BINDIR)/$(OBJDIR)
+OBJDIR_BS=$(subst /,\,$(OBJDIR))
+$(shell cmd /c "( @md $(OBJDIR_BS) 2> NUL)" 1>&2)
+else
+OBJDIR=$(BINDIR)
+OBJDIR_BS=$(subst /,\,$(OBJDIR))
+endif
+
+# --- extend library names with required prefixes
+LIST_LIBS=$(addprefix -l,$(LIBS))
+CLIBS_LIST=$(addprefix $(BINDIR)/,$(CLIBS))
+
+# always include compile directory in include path
+INCLUDE:=$(CMPDIR_BS);$(BINDIR_BS);$(INCLUDE);
+C_INCLUDE_PATH:=$(CMPDIR);$(BINDIR);$(C_INCLUDE_PATH)
+CPLUS_INCLUDE_PATH:=$(CMPDIR);$(BINDIR);$(CPLUS_INCLUDE_PATH)
+
+# --- cleanup list for directories created here for main makefile
+#     This macro should be used in the main makefile of a project only
+#     in order to cleanup temporary directories. Extend this macro in
+#     the file (GNU)project.in when creating additional directories, that should
+#     also be cleaned up
+DIRSTOCLEAN=$(BINDIR_BS) $(CMPDIR_BS)
+
+# --- define compiler and toolkit specific options
+
+# common options
+CC=gcc
+DBG=icsdebug
+RC=rc
+SC=$(SOMBASE)\bin\sc
+C_FLAGS_BASE=-c -Zomf
+L_FLAGS_BASE=-Zomf
+SC_FLAGS=-maddstar -S128000 -C128000 -mnoint
+
+CLIB=emxomfar
+ILIB=emximp -o
+LL=gcc
+C_FLAGS_COMPILER=
+L_FLAGS_LINKER=
+
+# --- define executable specific options
+ifneq ($(filter wlink WLINK,$(EMXOMFLD_TYPE)),)
+# These don't work because CMD.EXE is used and they exceed its
+# 1024 char cmd line length limit
+#EXE_L_FLAGS=-Zlinker "OPTION OFFSET=0x10000"
+#DLL_L_FLAGS=-Zdll -Zlinker "OPTION OFFSET=0x120000"
+DLL_L_FLAGS=-Zdll
+else
+EXE_L_FLAGS=-Zlinker /BASE:0X10000
+DLL_L_FLAGS=-Zdll -Zlinker /BASE:0X120000
+endif
+
+# --- link runtime statically for EMX
+ifdef COMPILER_IS_EMX
+L_FLAGS_LINKER:=-Zsys $(L_FLAGS_LINKER)
+DLL_L_FLAGS:=-Zso $(DLL_L_FLAGS)
+endif
+
+# --- check for RC version, this of Toolkit4 supports -n (/nologo)
+RC_FLAGS_LOGO=
+ifdef RES
+RC_FLAGS_LOGO=$(findstring -n, $(shell rc))
+endif
+
+# --- define threading option
+ifdef ST
+MT=
+endif
+ifdef MT
+L_FLAGS_MT=-Zmt
+else
+L_FLAGS_MT=
+endif
+
+# --- define app type
+ifdef APPTYPE
+L_FLAGS_APPTYPE=-Zlinker /PM:$(APPTYPE)
+endif
+
+# --- create list of true filenames of obj files
+OBJLIST=$(addprefix $(OBJDIR)/,$(OBJS))
+OBJLIST1=$(addprefix $(OBJDIR)/,$(OBJS1))
+OBJLIST2=$(addprefix $(OBJDIR)/,$(OBJS2))
+OBJLIST3=$(addprefix $(OBJDIR)/,$(OBJS3))
+OBJLIST4=$(addprefix $(OBJDIR)/,$(OBJS4))
+OBJLIST5=$(addprefix $(OBJDIR)/,$(OBJS5))
+OBJLIST6=$(addprefix $(OBJDIR)/,$(OBJS6))
+OBJLIST7=$(addprefix $(OBJDIR)/,$(OBJS7))
+OBJLIST8=$(addprefix $(OBJDIR)/,$(OBJS8))
+OBJLIST9=$(addprefix $(OBJDIR)/,$(OBJS9))
+
+# --- concatenate main options (all without DEBUG options)
+C_FLAGS_MAIN=$(strip $(C_FLAGS_BASE) $(C_FLAGS_COMPILER) $(C_FLAGS_USER))
+L_FLAGS_MAIN=$(strip $(L_FLAGS_LINKER) $(L_FLAGS_BASE) $(L_FLAGS_MT) $(L_FLAGS_APPTYPE) $(L_FLAGS_USER))
+RC_FLAGS_MAIN=$(strip $(RC_FLAGS_LOGO) $(RC_FLAGS_USER))
+CLIB_FLAGS_MAIN=$(strip $(CLIB_FLAGS_USER))
+
+# --- define debug options (always both)
+C_FLAGS_DEBUG=$(C_FLAGS_MAIN) -DDEBUG -g
+L_FLAGS_DEBUG=$(L_FLAGS_MAIN)
+RC_FLAGS_DEBUG=$(RC_FLAGS_MAIN) -DDEBUG
+
+C_FLAGS_RELEASE=$(C_FLAGS_MAIN) -DNDEBUG
+L_FLAGS_RELEASE=$(L_FLAGS_MAIN) -s
+RC_FLAGS_RELEASE=$(RC_FLAGS_MAIN) -DNDEBUG
+
+# --- define debug options
+ifdef DEBUG
+C_FLAGS=$(C_FLAGS_DEBUG)
+L_FLAGS=$(L_FLAGS_DEBUG)
+RC_FLAGS=$(RC_FLAGS_DEBUG)
+ifdef PMPRINTF
+PMPRINTF=$(BINDIR)/printf.obj
+endif
+else
+C_FLAGS=$(C_FLAGS_RELEASE)
+L_FLAGS=$(L_FLAGS_RELEASE)
+RC_FLAGS=$(RC_FLAGS_RELEASE)
+PMPRINTF=
+endif
+
+
+# --- suffix list
+.SUFFIXES: .exe .obj .c .obj .idl .ih .lib .dll .lst .def .rc .res $(DLLEXT)
+
+# --- if specified PRJFILE file or $(BASEDIR)/(GNU)project.in exists,
+#     call this to create additional project specific directories and
+#     extend macros etc.
+
+ifdef PRJINC
+PROJECTFILE=$(PRJINC)
+else
+PROJECTFILE=$(BASEDIR)/GNUproject.in
+ifeq ("", $(wildcard $(PROJECTFILE)))
+PROJECTFILE=$(BASEDIR)/project.in
+endif
+endif
+ifneq ("", $(wildcard $(PROJECTFILE)))
+-include $(PROJECTFILE)
+endif
+
+# --- set path for dependencies
+VPATH=$(CMPDIR);$(BINDIR);
+ifneq ("$(CMPDIR)","$(RESDIR)")
+VPATH:=$(VPATH)$(RESDIR);
+endif
+ifneq ("$(BINDIR)","$(OBJDIR)")
+VPATH:=$(VPATH)$(OBJDIR);
+endif
+
+
+# --- implicit rules
+
+# - SOM precompiler rules
+
+.idl.c:
+	$(SC) $(SC_FLAGS) $(SC_FLAGS_USER) -s "c" $*.idl
+
+.idl.ih:
+	$(SC) $(SC_FLAGS) $(SC_FLAGS_USER) -s "ih"  -d $(SCPDIR) $*.idl
+
+.idl.h:
+	$(SC) $(SC_FLAGS) $(SC_FLAGS_USER) -s "h"   -d $(SCPDIR) $*.idl
+
+.idl.def:
+	$(SC) $(SC_FLAGS) $(SC_FLAGS_USER) -s "def" -d $(SCPDIR) $*.idl
+ifdef COMPILER_IS_GCC
+	@sed -e "s/^[ \t]*\([a-zA-Z_][a-zA-Z_0-9]*Data\)[ \t]*$$/  _\1/"  $(SCPDIR_BS)\$*.def > $(TMP)\$*.tmp
+	@copy $(TMP)\$*.tmp $(SCPDIR_BS)\$*.def >NUL 2>&1
+	@del $(TMP)\$*.tmp >NUL 2>&1
+endif
+
+# - source to object rules
+
+.c.obj:
+	$(CC) $(C_FLAGS) -o $(OBJDIR)/$*.obj $*.c $(GCC_FILTER)
+
+.s.obj:
+	$(CC) $(C_FLAGS) -o $(OBJDIR)/$*.obj $*.s $(GCC_FILTER)
+
+.rc.res:
+	$(RC) -r $(RC_FLAGS) $*.rc $(RESDIR)/$(RES)
+
+# - object to executable rules
+
+.obj$(DLLEXT):
+	$(LL) $(L_FLAGS) $(DLL_L_FLAGS) -o $(BINDIR)/$*$(DLLEXT) $(OBJLIST) $(OBJLIST1) $(OBJLIST2) $(OBJLIST3) $(OBJLIST4) $(OBJLIST5) $(OBJLIST6) $(OBJLIST7) $(OBJLIST8) $(OBJLIST9) $(PMPRINTF) $(CLIBS_LIST) $(LIST_LIBS) $(DEFPATHNAME)
+ifdef RES
+	$(RC) $(RC_FLAGS_LOGO) $(RESDIR)/$(RES) $(BINDIR)/$*$(DLLEXT)
+endif
+ifdef LXLITE
+	lxlite $(BINDIR)/$*$(DLLEXT)
+endif
+
+.obj.exe:
+	$(LL) $(L_FLAGS) $(EXE_L_FLAGS) -o $(BINDIR)/$*.exe $(OBJLIST) $(OBJLIST1) $(OBJLIST2) $(OBJLIST3) $(OBJLIST4) $(OBJLIST5) $(OBJLIST6) $(OBJLIST7) $(OBJLIST8) $(OBJLIST9) $(PMPRINTF)  $(CLIBS_LIST) $(LIST_LIBS) $(DEFPATHNAME)
+ifdef RES
+	$(RC) $(RC_FLAGS_LOGO) $(RESDIR)/$(RES) $(BINDIR)/$*.exe
+endif
+ifdef LXLITE
+	lxlite $(BINDIR)/$*.exe
+endif
+
+# - library creation and listing rules
+
+ifdef IMPLIB
+.dll.lib:
+	$(ILIB) $(BINDIR)/$*.lib  $(BINDIR)/$*.dll
+
+.def.lib:
+ifdef DEF
+	$(ILIB) $(BINDIR)/$*.lib $(DEFPATHNAME)
+else
+	$(ILIB) $(BINDIR)/$*.lib $*.def
+endif
+
+else
+.obj.lib:
+	@for %a in ($(notdir $?)) do @(echo $(CLIB) $(CLIB_FLAGS_MAIN) rc $(BINDIR_BS)\$@ $(OBJDIR_BS)\%a & $(CLIB) $(CLIB_FLAGS_MAIN) rc $(BINDIR_BS)\$@ $(OBJDIR_BS)\%a)
+	@if exist  $(BINDIR_BS)\$*.bak del $(BINDIR_BS)\$*.bak
+endif
+
+.lib.lst:
+	$(CLIB) tv $(BINDIR_BS)\$*.lib > $(BINDIR_BS)\$*.lst
+
